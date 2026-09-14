@@ -1,0 +1,426 @@
+<title>CR工程板</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ground:#f1f2ef; --surface:#fbfbfa; --sunk:#e8eae5;
+  --ink:#191b1e; --ink2:#5c6166; --ink3:#8b9096;
+  --rule:#d7d9d4; --rule2:#c3c6c0;
+  --shu:#b5392e; --shu-soft:#f3e2e0; --shu-line:#e0bdb8;
+  --ochre:#8c6d1f; --ochre-soft:#f2ecda; --ochre-line:#ddd0a8;
+  --matcha:#2f6b52; --matcha-soft:#e0ece6; --matcha-line:#b6d2c5;
+  --disp:"Zen Kaku Gothic New",-apple-system,"Hiragino Sans",sans-serif;
+  --body:"Noto Sans JP",-apple-system,"Hiragino Sans",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#15171a; --surface:#1d2024; --sunk:#101215;
+    --ink:#e7e5e0; --ink2:#a2a7ad; --ink3:#71767d;
+    --rule:#2e3238; --rule2:#3d424a;
+    --shu:#e0675a; --shu-soft:#33211f; --shu-line:#5a322d;
+    --ochre:#cda546; --ochre-soft:#2b2618; --ochre-line:#54472447;
+    --matcha:#61b393; --matcha-soft:#17281f; --matcha-line:#2d4a3b;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#15171a; --surface:#1d2024; --sunk:#101215;
+  --ink:#e7e5e0; --ink2:#a2a7ad; --ink3:#71767d;
+  --rule:#2e3238; --rule2:#3d424a;
+  --shu:#e0675a; --shu-soft:#33211f; --shu-line:#5a322d;
+  --ochre:#cda546; --ochre-soft:#2b2618; --ochre-line:#544724;
+  --matcha:#61b393; --matcha-soft:#17281f; --matcha-line:#2d4a3b;
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font-family:var(--body);
+  font-size:14px;line-height:1.7;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px 90px}
+/* 案件ナビ */
+nav{display:flex;gap:0;overflow-x:auto;border-bottom:1px solid var(--rule);
+  margin:0 -20px 22px;padding:0 20px;position:sticky;top:0;background:var(--ground);z-index:10}
+nav a{flex:0 0 auto;padding:12px 13px 10px;font-size:12px;color:var(--ink2);
+  text-decoration:none;border-bottom:2px solid transparent;white-space:nowrap;
+  display:flex;align-items:baseline;gap:6px}
+nav a:hover{color:var(--ink)}
+nav a[aria-current]{color:var(--ink);border-bottom-color:var(--shu);font-weight:700}
+nav a b{font-family:var(--mono);font-size:10.5px;font-weight:500;color:var(--ink3)}
+nav a[aria-current] b{color:var(--shu)}
+nav a:focus-visible{outline:2px solid var(--ink);outline-offset:-3px}
+
+/* 見出し */
+header{display:flex;flex-wrap:wrap;align-items:flex-end;gap:14px 22px;
+  padding-bottom:14px;border-bottom:2px solid var(--ink)}
+h1{font-family:var(--disp);font-weight:900;font-size:27px;letter-spacing:.06em;
+  margin:0;line-height:1.1}
+.sub{color:var(--ink2);font-size:12.5px;margin:3px 0 0}
+.hstat{margin-left:auto;display:flex;gap:20px;text-align:right}
+.hstat div span{display:block}
+.hstat .n{font-family:var(--mono);font-weight:600;font-size:22px;
+  font-variant-numeric:tabular-nums;line-height:1.15}
+.hstat .l{font-size:10.5px;letter-spacing:.13em;color:var(--ink3)}
+.hstat .mine .n{color:var(--shu)}
+
+h2{font-family:var(--disp);font-weight:700;font-size:14px;letter-spacing:.14em;
+  margin:36px 0 3px;display:flex;align-items:baseline;gap:10px}
+h2 em{font-style:normal;font-family:var(--body);font-weight:400;font-size:11.5px;
+  letter-spacing:0;color:var(--ink3)}
+
+/* 工程レール */
+#tally{margin:8px 0 0;font-size:11.5px;font-family:var(--mono);
+  padding:6px 10px;border-left:3px solid var(--matcha);background:var(--matcha-soft);
+  color:var(--ink2)}
+#tally.ng{border-left-color:var(--shu);background:var(--shu-soft);color:var(--shu)}
+.rail{display:flex;gap:0;overflow-x:auto;padding:14px 0 4px;margin-top:12px}
+.stage{flex:0 0 auto;min-width:96px;padding:10px 12px 11px;background:var(--surface);
+  border:1px solid var(--rule);border-right:none;position:relative;cursor:pointer;
+  text-align:left;font:inherit;color:inherit;transition:background .12s}
+.stage:last-child{border-right:1px solid var(--rule)}
+.stage:hover,.stage:focus-visible{background:var(--sunk);outline:none}
+.stage:focus-visible{box-shadow:inset 0 0 0 2px var(--ink)}
+.stage[aria-pressed="true"]{background:var(--ink);border-color:var(--ink)}
+.stage[aria-pressed="true"] .sn,.stage[aria-pressed="true"] .sc,
+.stage[aria-pressed="true"] .st{color:var(--ground)}
+.stage::before{content:"";position:absolute;inset:0 0 auto 0;height:3px}
+.stage.mine::before{background:var(--shu)}
+.stage.wait::before{background:var(--ochre)}
+.stage.done::before{background:var(--matcha)}
+.sn{font-size:11.5px;font-weight:500;display:block;white-space:nowrap}
+.sc{font-family:var(--mono);font-weight:600;font-size:23px;line-height:1.2;
+  font-variant-numeric:tabular-nums;display:block;margin-top:2px}
+.stage.mine .sc{color:var(--shu)} .stage.wait .sc{color:var(--ochre)}
+.stage.done .sc{color:var(--matcha)}
+.sc.zero{color:var(--ink3)!important;font-weight:400}
+.st{font-size:10px;color:var(--ink3);display:block;white-space:nowrap}
+
+/* Todo */
+.stalls{display:grid;gap:1px;background:var(--rule);border:1px solid var(--rule);
+  margin-top:12px}
+.todohead{background:var(--ink);color:var(--ground);padding:8px 14px;
+  font-family:var(--disp);font-weight:700;font-size:13px;display:flex;gap:10px;
+  align-items:baseline}
+.todohead em{font-style:normal;font-family:var(--mono);font-size:10.5px;
+  padding:1px 6px;background:var(--shu);color:#fff;flex:0 0 auto;letter-spacing:.04em}
+.todohead.wait em{background:var(--ochre)}
+.todohead span{font-family:var(--body);font-weight:400;font-size:11px;opacity:.72;
+  margin-left:auto;white-space:nowrap}
+.stall{background:var(--surface);padding:9px 14px;display:flex;flex-wrap:wrap;
+  gap:5px 12px;align-items:baseline;border-left:3px solid transparent}
+.stall.mine{border-left-color:var(--shu)}
+.stall.wait{border-left-color:var(--ochre)}
+.stall .pj{font-size:11.5px;color:var(--ink2);min-width:100px}
+.stall .cnt{font-family:var(--mono);font-size:11px;color:var(--ink3);min-width:96px}
+.stall .ids{display:flex;flex-wrap:wrap;gap:4px;flex:1 1 240px}
+
+/* 番号チップ */
+.chip{font-family:var(--mono);font-size:11px;font-weight:500;padding:1px 6px;
+  border:1px solid var(--rule2);background:var(--ground);color:var(--ink2);
+  cursor:pointer;letter-spacing:.02em}
+.chip:hover,.chip:focus-visible{border-color:var(--ink);color:var(--ink);outline:none}
+
+/* 絞り込み */
+.filters{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:12px}
+.f{font-family:var(--body);font-size:11.5px;padding:4px 10px;border:1px solid var(--rule2);
+  background:var(--surface);color:var(--ink2);cursor:pointer;letter-spacing:.03em}
+.f[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--ground)}
+.f:focus-visible{outline:2px solid var(--ink);outline-offset:1px}
+#q{flex:1 1 220px;min-width:160px;font-family:var(--mono);font-size:12px;padding:4px 9px;
+  border:1px solid var(--rule2);background:var(--surface);color:var(--ink)}
+#q:focus{outline:none;border-color:var(--ink)}
+
+
+/* 登録簿 */
+/* **登録簿だけ横いっぱい**（本人 2026-09-14）。上の段は1180pxのまま、
+   ここだけ画面幅に抜く。左端は上と揃うので、右に伸びる形になる */
+.bleed{width:100vw;margin-left:calc(50% - 50vw);padding:0 max(20px, calc(50vw - 590px))}
+table{width:100%;border-collapse:collapse;margin-top:10px;font-size:12.5px;
+  table-layout:fixed}
+col.cId{width:78px} col.cStg{width:104px} col.cWho{width:150px} col.cD{width:60px}
+thead th{text-align:left;font-family:var(--disp);font-weight:700;font-size:10.5px;
+  letter-spacing:.12em;color:var(--ink3);padding:0 10px 6px;border-bottom:1px solid var(--rule2);
+  white-space:nowrap}
+tbody tr{border-bottom:1px solid var(--rule);cursor:pointer}
+tbody tr:hover{background:var(--surface)}
+tbody td{padding:7px 10px;vertical-align:top}
+td.id{font-family:var(--mono);font-weight:600;font-size:12px;white-space:nowrap;
+  border-left:3px solid transparent;padding-left:9px}
+tr.mine td.id{border-left-color:var(--shu)}
+tr.wait td.id{border-left-color:var(--ochre)}
+tr.done td.id{border-left-color:var(--matcha)}
+td.stg{white-space:nowrap;font-size:11.5px}
+td.d{font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--ink3);
+  text-align:right;white-space:nowrap;font-size:11.5px}
+td.txt{color:var(--ink2);max-width:1px;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap}
+.pill{display:inline-block;font-size:10.5px;padding:0 6px;border:1px solid;
+  letter-spacing:.02em}
+.pill.mine{color:var(--shu);border-color:var(--shu-line);background:var(--shu-soft)}
+.pill.wait{color:var(--ochre);border-color:var(--ochre-line);background:var(--ochre-soft)}
+.pill.done{color:var(--matcha);border-color:var(--matcha-line);background:var(--matcha-soft)}
+.none{padding:24px 10px;color:var(--ink3);font-size:12.5px}
+
+/* 中身 */
+.sheet{position:fixed;inset:0 0 0 auto;width:min(560px,100%);background:var(--surface);
+  border-left:1px solid var(--rule2);overflow-y:auto;padding:22px 24px 60px;
+  transform:translateX(100%);transition:transform .2s ease;z-index:20;
+  box-shadow:-14px 0 40px rgba(0,0,0,.13)}
+.sheet.open{transform:none}
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.3);opacity:0;pointer-events:none;
+  transition:opacity .2s;z-index:19}
+.scrim.open{opacity:1;pointer-events:auto}
+.sheet h3{font-family:var(--mono);font-weight:600;font-size:21px;margin:0;letter-spacing:.02em}
+.sheet .pj2{font-size:11.5px;color:var(--ink3);margin:1px 0 14px}
+.close{position:absolute;top:16px;right:18px;background:none;border:1px solid var(--rule2);
+  color:var(--ink2);font-size:15px;line-height:1;padding:4px 8px;cursor:pointer;font-family:var(--mono)}
+.close:hover{border-color:var(--ink);color:var(--ink)}
+.turn{padding:9px 12px;border-left:3px solid;margin-bottom:16px;font-size:12.5px}
+.turn.mine{border-color:var(--shu);background:var(--shu-soft)}
+.turn.wait{border-color:var(--ochre);background:var(--ochre-soft)}
+.turn.done{border-color:var(--matcha);background:var(--matcha-soft)}
+.turn b{font-family:var(--disp);font-size:13.5px}
+.turn span{color:var(--ink2)}
+dl{margin:0;display:grid;grid-template-columns:78px 1fr;gap:1px 0;
+  background:var(--rule);border:1px solid var(--rule)}
+dt{background:var(--sunk);padding:7px 9px;font-size:10.5px;letter-spacing:.08em;
+  color:var(--ink3);font-family:var(--disp);font-weight:700}
+dd{background:var(--surface);margin:0;padding:7px 11px;font-size:12.5px;
+  white-space:pre-wrap;word-break:break-word;line-height:1.75}
+dd.mono{font-family:var(--mono);font-size:11.5px}
+dd a{color:var(--shu)}
+@media (max-width:700px){
+  .bleed{width:auto;margin-left:0;padding:0}
+  .wrap{padding:20px 14px 80px}
+  h1{font-size:22px} .hstat{margin-left:0;width:100%;justify-content:flex-start}
+  .stall .who,.stall .pj{min-width:0}
+  th.hx,td.hx{display:none}
+  dl{grid-template-columns:66px 1fr}
+  .sheet{width:100%;border-left:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <nav id="nav"></nav>
+  <header>
+    <div>
+      <h1>CR工程板</h1>
+      <p class="sub" id="sub"></p>
+    </div>
+    <div class="hstat">
+      <div class="mine"><span class="n" id="nMine">–</span><span class="l">自分で進める</span></div>
+      <div><span class="n" id="nWait">–</span><span class="l">見に行く</span></div>
+      <div><span class="n" id="nAll">–</span><span class="l">ぜんぶ</span></div>
+    </div>
+  </header>
+
+  <h2>工程 <em>クリックで絞り込む／上の線の色は誰の番か</em></h2>
+  <div class="rail" id="rail"></div>
+
+  <p id="tally"></p>
+  <h2>Todo <em id="todoNote">工程ごとのやること（進＝自分で進める／見＝見に行く・催促する）</em></h2>
+  <div class="stalls" id="stalls"></div>
+
+  <h2>登録簿 <em>依頼シートの番号順・新しいものが上／行をクリックすると依頼の中身が出る</em></h2>
+  <div class="filters" id="pjs"></div>
+  <div class="filters">
+    <input id="q" placeholder="番号か言葉で探す（MB-48 / 白カビ / 耳鳴り）" autocomplete="off">
+    <button class="f" id="clear">絞り込みを消す</button>
+  </div>
+  <table>
+    <thead><tr>
+      <th>CR<span style="font-weight:400;color:var(--ink3)">▾</span></th><th>工程</th><th class="hx" id="th3">次は誰の番か</th>
+      <th class="hx">入れる訴求</th><th>日数</th>
+    </tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+  <div class="none" id="none" hidden>当てはまるCRがない。</div>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="sheet" id="sheet" aria-hidden="true">
+  <button class="close" id="close" aria-label="閉じる">✕</button>
+  <h3 id="sId"></h3>
+  <p class="pj2" id="sPj"></p>
+  <div class="turn" id="sTurn"></div>
+  <dl id="sDl"></dl>
+</aside>
+
+<script type="application/json" id="data">{"作成": "2026-09-14 19:17", "行数": {"メディカルブレス": 67, "デイリーワン": 75, "セアップ": 69, "見える力記憶力": 50, "百聞之才錠": 39, "BelleFC": 43, "ESTH": 20}, "工程": [{"名": "依頼前", "やること": "横転元を上げて依頼に出す", "種": "進"}, {"名": "依頼済", "やること": "外注から上がってきたか見る", "種": "見"}, {"名": "納品ずみ", "やること": "納品物を確認する（自分とクライアント）", "種": "進"}, {"名": "直し中", "やること": "直しが上がってきたか見る", "種": "見"}, {"名": "入稿待ち", "やること": "審査に出す", "種": "進"}, {"名": "審査中", "やること": "審査の結果を見る", "種": "見"}, {"名": "審査おちた", "やること": "作り直す", "種": "進"}, {"名": "配信待ち", "やること": "配信に載せる", "種": "進"}, {"名": "初動配信中", "やること": "配信の結果を更新する", "種": "進"}, {"名": "結果でた", "やること": "", "種": ""}, {"名": "作り直しずみ", "やること": "", "種": ""}], "略号": {"メディカルブレス": "MB", "デイリーワン": "DL", "セアップ": "SU", "見える力記憶力": "MK", "百聞之才錠": "HB", "BelleFC": "BF", "ESTH": "ES"}, "写し": {"メディカルブレス": "09-14 12:35", "デイリーワン": "09-14 10:59", "セアップ": "09-14 11:01", "見える力記憶力": "09-14 11:02", "百聞之才錠": "09-14 14:31", "BelleFC": "09-14 14:26", "ESTH": "09-14 19:17"}, "CR": [{"id": "ES-1", "商材": "ESTH", "略": "ES", "番号": "1", "工程": "依頼前", "やること": "横転元を上げて依頼に出す", "種": "進", "日数": 0, "依頼日": "2026-09-14", "比率": "横長(1200×628)／300KB未満", "訴求": "【左の赤ベタ・白の縦組み特大】開き毛穴に重要なのは\n【右の赤ベタ・白の縦組み特大】肌治療ではない", "絵": "【中央】白地に、鼻の毛穴を指で触っている30代の日本人女性の口元〜鼻の寄り（すっぴん）。※商材の実物写真はまだ無い（素材フォルダに後日追加）。**届くまで商材は写さない**（決めごと569）", "注釈": "※画像はイメージです。個人の感想です。※洗浄効果による", "横転元": "1_1556103375.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/ESTH_横転元_2026-09-14/1_1556103375.jpg", "クライアント": "", "入稿日": "", "作り直し先": "", "作り直し元": ""}, {"id": "ES-2", "商材": "ESTH", "略": "ES", "番号": "2", "工程": "依頼前", "やること": "横転元を上げて依頼に出す", "種": "進", "日数": 0, "依頼日": "2026-09-14", "比率": "横長(1200×628)／300KB未満", "訴求": "【右上・白の特大2行】鼻触ると\nザラザラする人 絶対見て\n【右下・白地に黒の特大】初回1,980円\n【右下の小さい行】通常7,920円・72%OFF・送料無料", "絵": "【左】濃い紺の地に、鼻の頭を指先でなでている30代の日本人女性の手元と鼻の寄り。※商材の実物写真はまだ無い（素材フォルダに後日追加）。**届くまで商材は写さない**（決めごと569）", "注釈": "※画像はイメージです。個人の感想です。※洗浄効果による", "横転元": "2_22236383.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/ESTH_横転元_2026-09-14/2_22236383.jpg", "クライアント": "", "入稿日": "", "作り直し先": "", "作り直し元": ""}, {"id": "ES-3", "商材": "ESTH", "略": "ES", "番号": "3", "工程": "依頼前", "やること": "横転元を上げて依頼に出す", "種": "進", "日数": 0, "依頼日": "2026-09-14", "比率": "横長(1200×628)／300KB未満", "訴求": "【右の見出し1行】そもそも開き毛穴・角栓詰まりの原因は\n【右・極太の特大】角栓の\n黒カビ\n【右下の小さい行】角栓がザラザラする方へ／パックやクレンジングでは取れません", "絵": "【左】白地に、毛穴の断面を平面的な線画で1つだけ大きく。角栓の奥に黒い点描でカビを描く。グロテスクにしない。実写は使わない。商材は写さない", "注釈": "※画像はイメージです。個人の感想です。※洗浄効果による", "横転元": "3_1558262734.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/ESTH_横転元_2026-09-14/3_1558262734.jpg", "クライアント": "", "入稿日": "", "作り直し先": "", "作り直し元": ""}, {"id": "ES-4", "商材": "ESTH", "略": "ES", "番号": "4", "工程": "依頼前", "やること": "横転元を上げて依頼に出す", "種": "進", "日数": 0, "依頼日": "2026-09-14", "比率": "横長(1200×628)／300KB未満", "訴求": "【上の赤帯・黒タグ】お詫び\n【上の赤帯・白文字】NHKで放送され二度完売。ご購入いただいた皆様、大変申し訳ございません\n【右の赤ベタ・黄色い縦組み特大】お詫び価格\n【右下の小さい行】検索しても出てこない限定価格 初回1,980円・おひとり様1回限り", "絵": "【左】赤い地に、頭を下げている白いシャツの日本人女性スタッフ（30代）の上半身。※商材の実物写真はまだ無い（素材フォルダに後日追加）。**届くまで商材は写さない**（決めごと569）", "注釈": "※画像はイメージです。個人の感想です。※洗浄効果による／放送・報道の時点は自社調べ／在庫状況は2026年9月時点・自社調べ", "横転元": "4_1557863495.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/ESTH_横転元_2026-09-14/4_1557863495.jpg", "クライアント": "", "入稿日": "", "作り直し先": "", "作り直し元": ""}, {"id": "ES-5", "商材": "ESTH", "略": "ES", "番号": "5", "工程": "依頼前", "やること": "横転元を上げて依頼に出す", "種": "進", "日数": 0, "依頼日": "2026-09-14", "比率": "正方形(1200×1200)／300KB未満", "訴求": "【上の小さい囲み】ファンデでうろこ作ってる人へ\n【左・特大】毛穴パックは\n逆に悪化\n【左下の小さい行】刺激と摩擦で毛穴は広がる／原因は角栓の黒カビ", "絵": "【上】洗面台の鏡の前で、鼻に貼った毛穴パックを剥がしかけている30代の日本人女性。【下】白地にテキスト。**上に画像・下にテキストの上下2分割**（決めごと580）。商材は写さない", "注釈": "※画像はイメージです。個人の感想です。※洗浄効果による", "横転元": "5_22205094.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/ESTH_横転元_2026-09-14/5_22205094.jpg", "クライアント": "", "入稿日": "", "作り直し先": "", "作り直し元": ""}, {"id": "ES-6", "商材": "ESTH", "略": "ES", "番号": "6", "工程": "依頼前", "やること": "横転元を上げて依頼に出す", "種": "進", "日数": 0, "依頼日": "2026-09-14", "比率": "正方形(1200×1200)／300KB未満", "訴求": "【下の緑の帯】東大研究成分ヒアルロン酸配合／150倍の浸透力\n【下の赤い特大】7,920円 ▶ 1,980円\n【下の小さい行】72%OFF・送料無料・毛穴の150分の1の超微粒子", "絵": "【上】白い地に、手の甲に透明なジェルを少量のせた30代の日本人女性の手元の寄り。**上に画像・下にテキストの上下2分割**（決めごと580）。※商材の実物写真はまだ無い（素材フォルダに後日追加）。**届くまで商材は写さない**（決めごと569）", "注釈": "※画像はイメージです。個人の感想です。※洗浄効果による／東大研究成分はヒアルロン酸のこと。記事LP参照／浸透力の比較対象は自社調べ", "横転元": "6_1559153697.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/ESTH_横転元_2026-09-14/6_1559153697.jpg", "クライアント": "", "入稿日": "", "作り直し先": "", "作り直し元": ""}, {"id": "ES-7", "商材": "ESTH", "略": "ES", "番号": "7", "工程": "依頼前", "やること": "横転元を上げて依頼に出す", "種": "進", "日数": 0, "依頼日": "2026-09-14", "比率": "横長(1200×628)／300KB未満", "訴求": "【上の見出し1行】東大卒医師「汚れてる人ほどゴッソリ」\n【赤いリボン章】100人中99人が毛穴汚れを消すことに成功\n【リボンの下】毛穴が気になる方へ 初回1,980円", "絵": "【左】濃い赤の地に、白衣の30代の日本人女性医師が正面を向いて微笑んでいる上半身。※商材の実物写真はまだ無い（素材フォルダに後日追加）。**届くまで商材は写さない**（決めごと569）", "注釈": "※画像はイメージです。個人の感想です。※洗浄効果による／東大研究成分はヒアルロン酸のこと。記事LP参照／自社調べ", "横転元": "7_1559379472.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/ESTH_横転元_2026-09-14/7_1559379472.jpg", "クライアント": "", "入稿日": "", "作り直し先": "", "作り直し元": ""}, {"id": "ES-8", "商材": "ESTH", "略": "ES", "番号": "8", "工程": "依頼前", "やること": "横転元を上げて依頼に出す", "種": "進", "日数": 0, "依頼日": "2026-09-14", "比率": "横長(1200×628)／300KB未満", "訴求": "【左・黒文字4行】「何を使っても\n無くならなかった毛穴が\n見えなくなりました」\n（36歳女性）", "絵": "【右】明るい洗面所で、鏡に映った自分の鼻を見て驚いている36歳くらいの日本人女性（すっぴん）。商材は写さない", "注釈": "※画像はイメージです。個人の感想です。※洗浄効果による", "横転元": "8_1557922211.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/ESTH_横転元_2026-09-14/8_1557922211.jpg", "クライアント": "", "入稿日": "", "作り直し先": "", "作り直し元": ""}, {"id": "ES-9", "商材": "ESTH", "略": "ES", "番号": "9", "工程": "依頼前", "やること": "横転元を上げて依頼に出す", "種": "進", "日数": 0, "依頼日": "2026-09-14", "比率": "正方形(1200×1200)／300KB未満", "訴求": "【上・白文字2行】いちご鼻で\n鼻から産毛生えてる人 絶対見て\n【下・白文字1行】原因は角栓の黒カビ。パックでは取れません", "絵": "【中央】濃い茶色の地に、鼻の毛穴の黒ずみが目立つ30代の日本人女性の鼻の寄り（横顔）。商材は写さない", "注釈": "※画像はイメージです。個人の感想です。※洗浄効果による", "横転元": "9_22116078.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/ESTH_横転元_2026-09-14/9_22116078.jpg", "クライアント": "", "入稿日": "", "作り直し先": "", "作り直し元": ""}, {"id": "ES-10", "商材": "ESTH", "略": "ES", "番号": "10", "工程": "依頼前", "やること": "横転元を上げて依頼に出す", "種": "進", "日数": 0, "依頼日": "2026-09-14", "比率": "横長(1200×628)／300KB未満", "訴求": "【右・特大2行】鼻のブツブツに重要なのは、\n洗顔ではない。", "絵": "【左】白地に、洗顔フォームの泡を鼻につけたまま鏡を見ている30代の日本人女性の顔の寄り。商材は写さない", "注釈": "※画像はイメージです。個人の感想です。※洗浄効果による", "横転元": "10_21621825.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/ESTH_横転元_2026-09-14/10_21621825.jpg", "クライアント": "", "入稿日": "", "作り直し先": "", "作り直し元": ""}, {"id": "ES-11", "商材": "ESTH", "略": "ES", "番号": "11", "工程": "依頼前", "やること": "横転元を上げて依頼に出す", "種": "進", "日数": 0, "依頼日": "2026-09-14", "比率": "横長(1200×628)／300KB未満", "訴求": "【左の赤ベタ・白の縦組み特大】脂性肌で\n毛穴ガン開きの人へ\n【左の小さい縦書き】韓国で爆売れの毛穴の消しゴム", "絵": "【右】黒い地に、頬の毛穴を鏡で確かめている30代の日本人女性の顔の寄り。※商材の実物写真はまだ無い（素材フォルダに後日追加）。**届くまで商材は写さない**（決めごと569）", "注釈": "※画像はイメージです。個人の感想です。※洗浄効果による／2026年9月時点・自社調べ", "横転元": "11_1557190263.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/ESTH_横転元_2026-09-14/11_1557190263.jpg", "クライアント": "", "入稿日": "", "作り直し先": "", "作り直し元": ""}, {"id": "ES-12", "商材": "ESTH", "略": "ES", "番号": "12", "工程": "依頼前", "やること": "横転元を上げて依頼に出す", "種": "進", "日数": 0, "依頼日": "2026-09-14", "比率": "正方形(1200×1200)／300KB未満", "訴求": "【上の小さい行】「３回ほどで毛穴が見えなくなりました」（45歳女性）\n【上・白の特大】塗るだけです。\n【左の丸バッジ】東大研究成分\n【左右の縦組みラベル2つ】12種の美容成分／韓国で注文殺到\n【下の白い帯】7,920円 ▶ 初回1,980円", "絵": "【中央】青い地に、頬に透明なジェルを指で塗り広げている40代の日本人女性の手元と頬の寄り。※商材の実物写真はまだ無い（素材フォルダに後日追加）。**届くまで商材は写さない**（決めごと569）", "注釈": "※画像はイメージです。個人の感想です。※洗浄効果による／東大研究成分はヒアルロン酸のこと。記事LP参照／2026年9月時点・自社調べ", "横転元": "12_1558466893.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/ESTH_横転元_2026-09-14/12_1558466893.jpg", "クライアント": "", "入稿日": "", "作り直し先": "", "作り直し元": ""}, {"id": "ES-13", "商材": "ESTH", "略": "ES", "番号": "13", "工程": "依頼前", "やること": "横転元を上げて依頼に出す", "種": "進", "日数": 0, "依頼日": "2026-09-14", "比率": "横長(1200×628)／300KB未満", "訴求": "【右・縦組みの赤い特大】塗る\nだけ", "絵": "【左】白地に、鼻に透明なジェルを指でくるくる塗っている30代の日本人女性の鼻と指の寄り。※商材の実物写真はまだ無い（素材フォルダに後日追加）。**届くまで商材は写さない**（決めごと569）", "注釈": "※画像はイメージです。個人の感想です。※洗浄効果による", "横転元": "13_22322013.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/ESTH_横転元_2026-09-14/13_22322013.jpg", "クライアント": "", "入稿日": "", "作り直し先": "", "作り直し元": ""}, {"id": "ES-14", "商材": "ESTH", "略": "ES", "番号": "14", "工程": "依頼前", "やること": "横転元を上げて依頼に出す", "種": "進", "日数": 0, "依頼日": "2026-09-14", "比率": "横長(1200×628)／300KB未満", "訴求": "【左上・白の見出し2行】クリニック治療は\n数百万コース\n【右・極太の縦組み特大2語】医療級\n洗浄\n【下の小さい行】毛穴に悩む30代の方へ。クリニックで使われる美容成分を自宅で／初回1,980円", "絵": "【全面】濃い紺の地に、美容クリニックの施術台を遠景で。右は極太の縦組みを置く余白として大きく空ける。商材は写さない", "注釈": "※画像はイメージです。個人の感想です。※洗浄効果による", "横転元": "14_1552849549.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/ESTH_横転元_2026-09-14/14_1552849549.jpg", "クライアント": "", "入稿日": "", "作り直し先": "", "作り直し元": ""}, {"id": "ES-15", "商材": "ESTH", "略": "ES", "番号": "15", "工程": "依頼前", "やること": "横転元を上げて依頼に出す", "種": "進", "日数": 0, "依頼日": "2026-09-14", "比率": "横長(1200×628)／300KB未満", "訴求": "【中央・縦組みの特大】顎のトゲトゲに\n重要なのは\nクレンジングではない\n【左の丸いバッジ2つ】NHK放送後爆売れ／大手通販サイトでランキング1位\n【縦の帯】千九百八十円\n【右端の縦帯】顎の角栓がザラザラする人へ", "絵": "【左】深い青の地に、顎を指でなぞっている30代の日本人女性の口元〜顎の寄り。※商材の実物写真はまだ無い（素材フォルダに後日追加）。**届くまで商材は写さない**（決めごと569）", "注釈": "※画像はイメージです。個人の感想です。※洗浄効果による／放送・報道の時点は自社調べ／2026年9月時点・自社調べ／大手通販サイトのランキング。集計期間は自社調べ", "横転元": "15_22328302.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/ESTH_横転元_2026-09-14/15_22328302.jpg", "クライアント": "", "入稿日": "", "作り直し先": "", "作り直し元": ""}, {"id": "ES-16", "商材": "ESTH", "略": "ES", "番号": "16", "工程": "依頼前", "やること": "横転元を上げて依頼に出す", "種": "進", "日数": 0, "依頼日": "2026-09-14", "比率": "正方形(1200×1200)／300KB未満", "訴求": "【上の黄色い地・見出し3行】ここのブツブツに重要なのは\n高級美容液ではない\n原因は角栓の黒カビでした\n【上の見出しの赤いハイライト】黒カビ\n【下の赤い帯】初回1,980円・送料無料", "絵": "【上】小鼻の横のブツブツを指さしている30代の日本人女性の顔の寄り。【下】黄色い地に見出し。**上に画像・下にテキストの上下2分割**（決めごと580）。商材は写さない", "注釈": "※画像はイメージです。個人の感想です。※洗浄効果による", "横転元": "16_1558371788.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/ESTH_横転元_2026-09-14/16_1558371788.jpg", "クライアント": "", "入稿日": "", "作り直し先": "", "作り直し元": ""}, {"id": "ES-17", "商材": "ESTH", "略": "ES", "番号": "17", "工程": "依頼前", "やること": "横転元を上げて依頼に出す", "種": "進", "日数": 0, "依頼日": "2026-09-14", "比率": "正方形(1200×1200)／300KB未満", "訴求": "【上・黒文字1行】「すっぴんでもママ友に若くなった？と聞かれます」（40歳女性）\n【下の金の立体文字2行】＼日本初／\n毛穴の消しゴム\n【最下段・金の立体文字】初回 千九百八十円", "絵": "【上】公園で子どもと並んで笑っている40代の日本人女性（すっぴん）の顔の寄り。**上に画像・下にテキストの上下2分割**（決めごと580）。※下段の文字は金の箔押しの立体文字にする（本人の直し・デイリーワン53の型）。商材は写さない", "注釈": "※画像はイメージです。個人の感想です。※洗浄効果による／2026年9月時点・自社調べ（LPに記載なし・本人OK 2026-09-14）", "横転元": "17_2986883731744.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/ESTH_横転元_2026-09-14/17_2986883731744.jpg", "クライアント": "", "入稿日": "", "作り直し先": "", "作り直し元": ""}, {"id": "ES-18", "商材": "ESTH", "略": "ES", "番号": "18", "工程": "依頼前", "やること": "横転元を上げて依頼に出す", "種": "進", "日数": 0, "依頼日": "2026-09-14", "比率": "正方形(1200×1200)／300KB未満", "訴求": "【左・黄色の縦組み特大】ノーベル賞も受賞した成分\n【右・白の縦組み2行】角栓の黒カビを\n溶かして崩す\n【下の小さい行】東大研究成分・12種の美容成分／初回1,980円", "絵": "【全面】濃い緑の地に、毛穴の断面の線画を右下に小さく。縦組みを2列置く余白を大きく取る。商材は写さない", "注釈": "※画像はイメージです。個人の感想です。※洗浄効果による／東大研究成分はヒアルロン酸のこと。記事LP参照／成分の受賞歴について。2026年9月時点・自社調べ（LPに記載なし・本人OK 2026-09-14）", "横転元": "18_1558589761.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/ESTH_横転元_2026-09-14/18_1558589761.jpg", "クライアント": "", "入稿日": "", "作り直し先": "", "作り直し元": ""}, {"id": "ES-19", "商材": "ESTH", "略": "ES", "番号": "19", "工程": "依頼前", "やること": "横転元を上げて依頼に出す", "種": "進", "日数": 0, "依頼日": "2026-09-14", "比率": "横長(1200×628)／300KB未満", "訴求": "【左・明朝の白い見出し2行】毛穴のない肌へ、\n塗るだけで。\n【罫線の下】東大研究成分ヒアルロン酸を限界配合\n【下の小さい行】黒ずみが気になる方へ／先着100名様・本日23:59まで", "絵": "【右】明るいグレーの地に、頬に手を当てて微笑む30代の日本人女性の顔（すっぴん・肌の質感が見える寄り）。商材は写さない", "注釈": "※画像はイメージです。個人の感想です。※洗浄効果による／東大研究成分はヒアルロン酸のこと。記事LP参照／先着・締切は1日ごとに更新", "横転元": "19_1559226446.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/ESTH_横転元_2026-09-14/19_1559226446.jpg", "クライアント": "", "入稿日": "", "作り直し先": "", "作り直し元": ""}, {"id": "ES-20", "商材": "ESTH", "略": "ES", "番号": "20", "工程": "依頼前", "やること": "横転元を上げて依頼に出す", "種": "進", "日数": 0, "依頼日": "2026-09-14", "比率": "横長(1200×628)／300KB未満", "訴求": "【上の画像の下・極太ゴシック4行】「ファンデでうろこ作ってる30代、実は…」\n原因は角栓の黒カビだった。\n東大研究成分の毛穴の消しゴムが72%OFF。\nまるで別人級\n【最下段の小さい行】初回1,980円・定期縛りなし", "絵": "【上】ファンデが毛穴に落ちてうろこ状になった頬の寄り写真1枚。**左右2枚の対比にしない**（決めごと620）。【下】白地に極太ゴシックの記事風見出し。商材は写さない", "注釈": "※画像はイメージです。個人の感想です。※洗浄効果による／東大研究成分はヒアルロン酸のこと。記事LP参照／定期コース2回目お受取前の解約は解約手数料2,980円(税込)", "横転元": "20_1558937232.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/ESTH_横転元_2026-09-14/20_1558937232.jpg", "クライアント": "", "入稿日": "", "作り直し先": "", "作り直し元": ""}], "ページ": "ES", "絞り": "ESTH"}</script>
+<script>
+const D = JSON.parse(document.getElementById('data').textContent);
+const 種 = Object.fromEntries(D.工程.map(x => [x.名, x.種]));
+const やる = Object.fromEntries(D.工程.map(x => [x.名, x.やること]));
+const DONE = ['配信中'];
+const kind = s => 種[s] === '進' ? 'mine' : 種[s] === '見' ? 'wait' : 'done';
+const 順 = D.工程.map(x => x.名);
+const 案順 = Object.keys(D.略号);
+let fStage = null, fPj = null, fQ = '';
+
+/* 案件ナビ */
+const nav = document.getElementById('nav');
+nav.innerHTML = [['index', 'ぜんぶ', '']].concat(
+  Object.entries(D.略号).map(([名, 略]) => [略, 名, 略])
+).map(([f, 名, 略]) =>
+  `<a href="${f}.html"${D.ページ === f ? ' aria-current="page"' : ''}>${名}`
+  + (略 ? `<b>${略}</b>` : '') + `</a>`).join('');
+
+document.title = (D.絞り ? D.絞り + '　' : '') + 'CR工程板';
+if (D.絞り) document.querySelector('h1').textContent = D.絞り;
+document.getElementById('sub').textContent =
+  `${D.作成} 時点　シートの写し${D.写し[D.絞り] ? '（' + D.写し[D.絞り] + '）' : ''}から作っている　`
+  + (D.絞り ? `このページは${D.絞り}の${D.CR.length}本` : `7案件 ${D.CR.length}本`);
+const cnt = k => D.CR.filter(c => kind(c.工程) === k).length;
+nMine.textContent = cnt('mine'); nWait.textContent = cnt('wait');
+nAll.textContent = D.CR.length;
+
+/* 工程レール */
+const rail = document.getElementById('rail');
+D.工程.forEach(st => {
+  const n = D.CR.filter(c => c.工程 === st.名).length;
+  const b = document.createElement('button');
+  b.className = 'stage ' + kind(st.名);
+  b.setAttribute('aria-pressed', 'false');
+  b.innerHTML = `<span class="sn">${st.名}</span>`
+    + `<span class="sc${n ? '' : ' zero'}">${n || '·'}</span>`
+    + `<span class="st">${st.やること || '—'}</span>`;
+  b.onclick = () => { fStage = fStage === st.名 ? null : st.名; draw(); };
+  b.dataset.stage = st.名;
+  rail.appendChild(b);
+});
+
+/* 案件の絞り込み */
+const pjs = document.getElementById('pjs');
+if (D.絞り) document.getElementById('pjs').hidden = true;
+Object.entries(D.略号).forEach(([名, 略]) => {
+  const n = D.CR.filter(c => c.商材 === 名).length;
+  const b = document.createElement('button');
+  b.className = 'f'; b.setAttribute('aria-pressed', 'false');
+  b.textContent = `${略}　${名}　${n}`;
+  b.onclick = () => { fPj = fPj === 名 ? null : 名; draw(); };
+  b.dataset.pj = 名;
+  pjs.appendChild(b);
+});
+
+/* 足したらシートの行数になるか（決めごと637） */
+(() => {
+  const el = document.getElementById('tally');
+  const 対象 = D.絞り ? [D.絞り] : Object.keys(D.略号);
+  const ずれ = 対象.map(p => {
+    const 工 = D.CR.filter(c => c.商材 === p).length;
+    const 行 = (D.行数 || {})[p];
+    return { p, 工, 行 };
+  }).filter(x => x.行 != null && x.工 !== x.行);
+  const 計 = D.CR.length;
+  const 行計 = 対象.reduce((s, p) => s + ((D.行数 || {})[p] || 0), 0);
+  if (ずれ.length) {
+    el.className = 'ng';
+    el.textContent = '工程の合計がシートの行数と合わない　'
+      + ずれ.map(x => `${x.p} ${x.工}/${x.行}`).join('、');
+  } else {
+    el.textContent = `✓ 工程を全部足すと ${計} ＝ 依頼シートの行数 ${行計}`
+      + (D.絞り ? '' : `（${対象.length}案件とも一致）`);
+  }
+})();
+
+
+/* Todo＝全工程のやること（決めごと640） */
+(() => {
+  // **要素は getElementById で取る。**id頼みの暗黙グローバルに寄りかかると、
+  // 置換で定義行が消えても気づけない（2026-09-14・決めごと643）
+  const box = document.getElementById('stalls');
+  let 総 = 0;
+  const html = D.工程.filter(x => x.やること).map(x => {
+    const v = D.CR.filter(c => c.工程 === x.名);
+    if (!v.length) return '';
+    総 += v.length;
+    const k = x.種 === '進' ? 'mine' : 'wait';
+    const byPj = {};
+    v.forEach(c => (byPj[c.商材] = byPj[c.商材] || []).push(c));
+    const 行 = Object.entries(byPj).sort((a, b) => b[1].length - a[1].length)
+      .map(([pj, cs]) => {
+        cs.sort((a, b) => (+b.番号) - (+a.番号));
+        const 最 = Math.max(...cs.map(c => c.日数));
+        const ids = cs.slice(0, 12)
+          .map(c => `<button class="chip" data-id="${c.id}">${c.id}</button>`).join('')
+          + (cs.length > 12 ? `<span class="cnt">ほか${cs.length - 12}</span>` : '');
+        return `<div class="stall ${k}"><span class="pj">${pj}</span>`
+          + `<span class="cnt">${cs.length}本${最 >= 3 ? '・最長' + 最 + '日' : ''}</span>`
+          + `<span class="ids">${ids}</span></div>`;
+      }).join('');
+    return `<div class="todohead ${k}"><em>${x.種}</em><b>${x.やること}</b>`
+      + `<span>${v.length}本・${x.名}</span></div>` + 行;
+  }).join('');
+  box.innerHTML = html || '<div class="stall">やることは無い。</div>';
+  const note = document.getElementById('todoNote');
+  if (総 && note) note.insertAdjacentHTML('beforeend',
+    ` <b style="font-family:var(--mono);color:var(--shu)">合計${総}本</b>`);
+})();
+
+/* 登録簿 */
+const rows = document.getElementById('rows');
+function draw() {
+  document.querySelectorAll('.stage').forEach(b =>
+    b.setAttribute('aria-pressed', b.dataset.stage === fStage));
+  document.querySelectorAll('.f[data-pj]').forEach(b =>
+    b.setAttribute('aria-pressed', b.dataset.pj === fPj));
+  const q = fQ.trim().toLowerCase();
+  const list = D.CR.filter(c =>
+    (!fStage || c.工程 === fStage) && (!fPj || c.商材 === fPj) &&
+    (!q || c.id.toLowerCase().includes(q) || (c.訴求 + c.絵 + c.検収).toLowerCase().includes(q))
+  ).sort((a, b) =>
+    案順.indexOf(a.商材) - 案順.indexOf(b.商材) || (+b.番号) - (+a.番号));
+  rows.innerHTML = list.map(c => {
+    const k = kind(c.工程);
+    return `<tr class="${k}" data-id="${c.id}">`
+      + `<td class="id">${c.id}</td>`
+      + `<td class="stg"><span class="pill ${k}">${c.工程}</span></td>`
+      + `<td class="hx">${D.絞り ? c.やること : c.商材}</td>`
+      + `<td class="txt hx">${(c.訴求 || c.絵 || '').replace(/\n/g, ' ').slice(0, 200)}</td>`
+      + `<td class="d">${c.日数}日</td></tr>`;
+  }).join('');
+  document.getElementById('none').hidden = list.length > 0;
+}
+
+/* 中身 */
+const sheet = document.getElementById('sheet'), scrim = document.getElementById('scrim');
+function open_(id) {
+  const c = D.CR.find(x => x.id === id); if (!c) return;
+  const k = kind(c.工程);
+  sId.textContent = c.id;
+  sPj.textContent = `${c.商材}　${c.番号}番　${c.比率 || ''}`;
+  sTurn.className = 'turn ' + k;
+  sTurn.innerHTML = `<b>${c.工程}</b> <span>→ ${c.やること}・${c.日数}日</span>`;
+  const F = [['依頼日', c.依頼日], ['入れる訴求', c.訴求], ['絵の指示', c.絵],
+    ['入れる注釈', c.注釈], ['横転元', c.横転元], ['元の実物', c.元の実物],
+    ['検収', c.検収], ['審査', c.審査], ['おちた理由', c.落ち理由], ['配信', c.配信],
+    ['作り直し先', c.作り直し先], ['作り直し元', c.作り直し元],
+    ['クライアント', c.クライアント], ['入稿日', c.入稿日]];
+  sDl.innerHTML = F.filter(([, v]) => v).map(([n, v]) => {
+    const mono = ['横転元', '元の実物', '依頼日', '入稿日',
+                  '作り直し先', '作り直し元'].includes(n);
+    if (n === '作り直し先' || n === '作り直し元')
+      return `<dt>${n}</dt><dd class="mono">`
+        + `<button class="chip" data-id="${esc(v)}">${esc(v)}</button></dd>`;
+    return `<dt>${n}</dt><dd class="${mono ? 'mono' : ''}">${esc(v)}</dd>`;
+  }).join('') + (c.完成 ? `<dt>完成CR</dt><dd class="mono"><a href="${c.完成}" target="_blank" rel="noopener">Driveで開く</a></dd>` : '');
+  sheet.classList.add('open'); scrim.classList.add('open');
+  sheet.setAttribute('aria-hidden', 'false'); document.getElementById('close').focus();
+}
+const esc = s => String(s).replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m]));
+function shut() {
+  sheet.classList.remove('open'); scrim.classList.remove('open');
+  sheet.setAttribute('aria-hidden', 'true');
+}
+document.getElementById('close').onclick = shut;
+scrim.onclick = shut;
+addEventListener('keydown', e => { if (e.key === 'Escape') shut(); });
+document.body.addEventListener('click', e => {
+  const t = e.target.closest('[data-id]'); if (t) open_(t.dataset.id);
+});
+document.getElementById('q').addEventListener('input', e => { fQ = e.target.value; draw(); });
+document.getElementById('clear').onclick = () => {
+  fStage = fPj = null; fQ = ''; document.getElementById('q').value = ''; draw();
+};
+if (!D.絞り) document.getElementById('th3').textContent = '案件';
+draw();
+</script>
