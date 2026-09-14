@@ -1,0 +1,369 @@
+<title>CR工程板</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ground:#f1f2ef; --surface:#fbfbfa; --sunk:#e8eae5;
+  --ink:#191b1e; --ink2:#5c6166; --ink3:#8b9096;
+  --rule:#d7d9d4; --rule2:#c3c6c0;
+  --shu:#b5392e; --shu-soft:#f3e2e0; --shu-line:#e0bdb8;
+  --ochre:#8c6d1f; --ochre-soft:#f2ecda; --ochre-line:#ddd0a8;
+  --matcha:#2f6b52; --matcha-soft:#e0ece6; --matcha-line:#b6d2c5;
+  --disp:"Zen Kaku Gothic New",-apple-system,"Hiragino Sans",sans-serif;
+  --body:"Noto Sans JP",-apple-system,"Hiragino Sans",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#15171a; --surface:#1d2024; --sunk:#101215;
+    --ink:#e7e5e0; --ink2:#a2a7ad; --ink3:#71767d;
+    --rule:#2e3238; --rule2:#3d424a;
+    --shu:#e0675a; --shu-soft:#33211f; --shu-line:#5a322d;
+    --ochre:#cda546; --ochre-soft:#2b2618; --ochre-line:#54472447;
+    --matcha:#61b393; --matcha-soft:#17281f; --matcha-line:#2d4a3b;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#15171a; --surface:#1d2024; --sunk:#101215;
+  --ink:#e7e5e0; --ink2:#a2a7ad; --ink3:#71767d;
+  --rule:#2e3238; --rule2:#3d424a;
+  --shu:#e0675a; --shu-soft:#33211f; --shu-line:#5a322d;
+  --ochre:#cda546; --ochre-soft:#2b2618; --ochre-line:#544724;
+  --matcha:#61b393; --matcha-soft:#17281f; --matcha-line:#2d4a3b;
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font-family:var(--body);
+  font-size:14px;line-height:1.7;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px 90px}
+/* 案件ナビ */
+nav{display:flex;gap:0;overflow-x:auto;border-bottom:1px solid var(--rule);
+  margin:0 -20px 22px;padding:0 20px;position:sticky;top:0;background:var(--ground);z-index:10}
+nav a{flex:0 0 auto;padding:12px 13px 10px;font-size:12px;color:var(--ink2);
+  text-decoration:none;border-bottom:2px solid transparent;white-space:nowrap;
+  display:flex;align-items:baseline;gap:6px}
+nav a:hover{color:var(--ink)}
+nav a[aria-current]{color:var(--ink);border-bottom-color:var(--shu);font-weight:700}
+nav a b{font-family:var(--mono);font-size:10.5px;font-weight:500;color:var(--ink3)}
+nav a[aria-current] b{color:var(--shu)}
+nav a:focus-visible{outline:2px solid var(--ink);outline-offset:-3px}
+
+/* 見出し */
+header{display:flex;flex-wrap:wrap;align-items:flex-end;gap:14px 22px;
+  padding-bottom:14px;border-bottom:2px solid var(--ink)}
+h1{font-family:var(--disp);font-weight:900;font-size:27px;letter-spacing:.06em;
+  margin:0;line-height:1.1}
+.sub{color:var(--ink2);font-size:12.5px;margin:3px 0 0}
+.hstat{margin-left:auto;display:flex;gap:20px;text-align:right}
+.hstat div span{display:block}
+.hstat .n{font-family:var(--mono);font-weight:600;font-size:22px;
+  font-variant-numeric:tabular-nums;line-height:1.15}
+.hstat .l{font-size:10.5px;letter-spacing:.13em;color:var(--ink3)}
+.hstat .mine .n{color:var(--shu)}
+
+h2{font-family:var(--disp);font-weight:700;font-size:14px;letter-spacing:.14em;
+  margin:36px 0 3px;display:flex;align-items:baseline;gap:10px}
+h2 em{font-style:normal;font-family:var(--body);font-weight:400;font-size:11.5px;
+  letter-spacing:0;color:var(--ink3)}
+
+/* 工程レール */
+.rail{display:flex;gap:0;overflow-x:auto;padding:14px 0 4px;margin-top:12px}
+.stage{flex:0 0 auto;min-width:96px;padding:10px 12px 11px;background:var(--surface);
+  border:1px solid var(--rule);border-right:none;position:relative;cursor:pointer;
+  text-align:left;font:inherit;color:inherit;transition:background .12s}
+.stage:last-child{border-right:1px solid var(--rule)}
+.stage:hover,.stage:focus-visible{background:var(--sunk);outline:none}
+.stage:focus-visible{box-shadow:inset 0 0 0 2px var(--ink)}
+.stage[aria-pressed="true"]{background:var(--ink);border-color:var(--ink)}
+.stage[aria-pressed="true"] .sn,.stage[aria-pressed="true"] .sc,
+.stage[aria-pressed="true"] .st{color:var(--ground)}
+.stage::before{content:"";position:absolute;inset:0 0 auto 0;height:3px}
+.stage.mine::before{background:var(--shu)}
+.stage.wait::before{background:var(--ochre)}
+.stage.done::before{background:var(--matcha)}
+.sn{font-size:11.5px;font-weight:500;display:block;white-space:nowrap}
+.sc{font-family:var(--mono);font-weight:600;font-size:23px;line-height:1.2;
+  font-variant-numeric:tabular-nums;display:block;margin-top:2px}
+.stage.mine .sc{color:var(--shu)} .stage.wait .sc{color:var(--ochre)}
+.stage.done .sc{color:var(--matcha)}
+.sc.zero{color:var(--ink3)!important;font-weight:400}
+.st{font-size:10px;color:var(--ink3);display:block;white-space:nowrap}
+
+/* 止まり */
+.stalls{display:grid;gap:1px;background:var(--rule);border:1px solid var(--rule);
+  margin-top:12px}
+.stall{background:var(--surface);padding:11px 14px;display:flex;flex-wrap:wrap;
+  gap:4px 12px;align-items:baseline;border-left:3px solid transparent}
+.stall.mine{border-left-color:var(--shu)}
+.stall.wait{border-left-color:var(--ochre)}
+.stall .who{font-family:var(--disp);font-weight:700;font-size:13px;min-width:104px}
+.stall .pj{font-size:11.5px;color:var(--ink2);min-width:88px}
+.stall .cnt{font-family:var(--mono);font-size:11.5px;color:var(--ink3)}
+.stall .ids{display:flex;flex-wrap:wrap;gap:4px;flex:1 1 240px}
+
+/* 番号チップ */
+.chip{font-family:var(--mono);font-size:11px;font-weight:500;padding:1px 6px;
+  border:1px solid var(--rule2);background:var(--ground);color:var(--ink2);
+  cursor:pointer;letter-spacing:.02em}
+.chip:hover,.chip:focus-visible{border-color:var(--ink);color:var(--ink);outline:none}
+
+/* 絞り込み */
+.filters{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:12px}
+.f{font-family:var(--body);font-size:11.5px;padding:4px 10px;border:1px solid var(--rule2);
+  background:var(--surface);color:var(--ink2);cursor:pointer;letter-spacing:.03em}
+.f[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--ground)}
+.f:focus-visible{outline:2px solid var(--ink);outline-offset:1px}
+#q{flex:1 1 180px;min-width:140px;font-family:var(--mono);font-size:12px;padding:4px 9px;
+  border:1px solid var(--rule2);background:var(--surface);color:var(--ink)}
+#q:focus{outline:none;border-color:var(--ink)}
+
+/* 登録簿 */
+table{width:100%;border-collapse:collapse;margin-top:10px;font-size:12.5px}
+thead th{text-align:left;font-family:var(--disp);font-weight:700;font-size:10.5px;
+  letter-spacing:.12em;color:var(--ink3);padding:0 10px 6px;border-bottom:1px solid var(--rule2);
+  white-space:nowrap}
+tbody tr{border-bottom:1px solid var(--rule);cursor:pointer}
+tbody tr:hover{background:var(--surface)}
+tbody td{padding:7px 10px;vertical-align:top}
+td.id{font-family:var(--mono);font-weight:600;font-size:12px;white-space:nowrap;
+  border-left:3px solid transparent;padding-left:9px}
+tr.mine td.id{border-left-color:var(--shu)}
+tr.wait td.id{border-left-color:var(--ochre)}
+tr.done td.id{border-left-color:var(--matcha)}
+td.stg{white-space:nowrap;font-size:11.5px}
+td.d{font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--ink3);
+  text-align:right;white-space:nowrap;font-size:11.5px}
+td.txt{color:var(--ink2);max-width:1px;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap}
+.pill{display:inline-block;font-size:10.5px;padding:0 6px;border:1px solid;
+  letter-spacing:.02em}
+.pill.mine{color:var(--shu);border-color:var(--shu-line);background:var(--shu-soft)}
+.pill.wait{color:var(--ochre);border-color:var(--ochre-line);background:var(--ochre-soft)}
+.pill.done{color:var(--matcha);border-color:var(--matcha-line);background:var(--matcha-soft)}
+.none{padding:24px 10px;color:var(--ink3);font-size:12.5px}
+
+/* 中身 */
+.sheet{position:fixed;inset:0 0 0 auto;width:min(560px,100%);background:var(--surface);
+  border-left:1px solid var(--rule2);overflow-y:auto;padding:22px 24px 60px;
+  transform:translateX(100%);transition:transform .2s ease;z-index:20;
+  box-shadow:-14px 0 40px rgba(0,0,0,.13)}
+.sheet.open{transform:none}
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.3);opacity:0;pointer-events:none;
+  transition:opacity .2s;z-index:19}
+.scrim.open{opacity:1;pointer-events:auto}
+.sheet h3{font-family:var(--mono);font-weight:600;font-size:21px;margin:0;letter-spacing:.02em}
+.sheet .pj2{font-size:11.5px;color:var(--ink3);margin:1px 0 14px}
+.close{position:absolute;top:16px;right:18px;background:none;border:1px solid var(--rule2);
+  color:var(--ink2);font-size:15px;line-height:1;padding:4px 8px;cursor:pointer;font-family:var(--mono)}
+.close:hover{border-color:var(--ink);color:var(--ink)}
+.turn{padding:9px 12px;border-left:3px solid;margin-bottom:16px;font-size:12.5px}
+.turn.mine{border-color:var(--shu);background:var(--shu-soft)}
+.turn.wait{border-color:var(--ochre);background:var(--ochre-soft)}
+.turn.done{border-color:var(--matcha);background:var(--matcha-soft)}
+.turn b{font-family:var(--disp);font-size:13.5px}
+.turn span{color:var(--ink2)}
+dl{margin:0;display:grid;grid-template-columns:78px 1fr;gap:1px 0;
+  background:var(--rule);border:1px solid var(--rule)}
+dt{background:var(--sunk);padding:7px 9px;font-size:10.5px;letter-spacing:.08em;
+  color:var(--ink3);font-family:var(--disp);font-weight:700}
+dd{background:var(--surface);margin:0;padding:7px 11px;font-size:12.5px;
+  white-space:pre-wrap;word-break:break-word;line-height:1.75}
+dd.mono{font-family:var(--mono);font-size:11.5px}
+dd a{color:var(--shu)}
+@media (max-width:700px){
+  .wrap{padding:20px 14px 80px}
+  h1{font-size:22px} .hstat{margin-left:0;width:100%;justify-content:flex-start}
+  .stall .who,.stall .pj{min-width:0}
+  th.hx,td.hx{display:none}
+  dl{grid-template-columns:66px 1fr}
+  .sheet{width:100%;border-left:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <nav id="nav"></nav>
+  <header>
+    <div>
+      <h1>CR工程板</h1>
+      <p class="sub" id="sub"></p>
+    </div>
+    <div class="hstat">
+      <div class="mine"><span class="n" id="nMine">–</span><span class="l">こちらの番</span></div>
+      <div><span class="n" id="nWait">–</span><span class="l">相手待ち</span></div>
+      <div><span class="n" id="nAll">–</span><span class="l">ぜんぶ</span></div>
+    </div>
+  </header>
+
+  <h2>工程 <em>クリックで絞り込む／上の線の色は誰の番か</em></h2>
+  <div class="rail" id="rail"></div>
+
+  <h2>いま動かすもの <em>同じ工程で3日以上。こちらの番のものを上に</em></h2>
+  <div class="stalls" id="stalls"></div>
+
+  <h2>登録簿 <em>行をクリックすると依頼の中身が出る</em></h2>
+  <div class="filters" id="pjs"></div>
+  <div class="filters">
+    <input id="q" placeholder="番号か言葉で探す（MB-48 / 白カビ / 耳鳴り）" autocomplete="off">
+    <button class="f" id="clear">絞り込みを消す</button>
+  </div>
+  <table>
+    <thead><tr>
+      <th>CR</th><th>工程</th><th class="hx" id="th3">次は誰の番か</th>
+      <th class="hx">入れる訴求</th><th>日数</th>
+    </tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+  <div class="none" id="none" hidden>当てはまるCRがない。</div>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="sheet" id="sheet" aria-hidden="true">
+  <button class="close" id="close" aria-label="閉じる">✕</button>
+  <h3 id="sId"></h3>
+  <p class="pj2" id="sPj"></p>
+  <div class="turn" id="sTurn"></div>
+  <dl id="sDl"></dl>
+</aside>
+
+<script type="application/json" id="data">{"作成": "2026-09-14 10:40", "工程": [{"名": "依頼済", "担当": "外注が作っている"}, {"名": "納品ずみ", "担当": "こちらが検収する"}, {"名": "直し中", "担当": "外注が直している"}, {"名": "クライアント待ち", "担当": "クライアントが見ている"}, {"名": "クライアント直し", "担当": "外注が直している"}, {"名": "入稿待ち", "担当": "こちらが入稿する"}, {"名": "審査中", "担当": "媒体が見ている"}, {"名": "審査おちた", "担当": "こちらが作り直す"}, {"名": "配信待ち", "担当": "こちらが配信に載せる"}, {"名": "配信中", "担当": "数字を見る"}], "略号": {"メディカルブレス": "MB", "デイリーワン": "DL", "セアップ": "SU", "見える力記憶力": "MK", "百聞之才錠": "HB", "百明青汁": "AJ", "BelleFC": "BF"}, "写し": {"メディカルブレス": "09-14 09:55", "デイリーワン": "09-14 09:55", "セアップ": "09-14 09:56", "見える力記憶力": "09-14 09:57", "百聞之才錠": "09-14 09:58", "百明青汁": "09-14 09:59", "BelleFC": "09-14 09:53"}, "CR": [{"id": "HB-1", "商材": "百聞之才錠", "略": "HB", "番号": "1", "工程": "納品ずみ", "担当": "こちらが検収する", "日数": 5, "依頼日": "2026-09-09", "比率": "横長(1200×628)／300KB未満", "訴求": "【上のテロップ3行】その「ジージー」、耳が原因ではありません\n放置すると脳にダメージ", "絵": "【全面】セピア調で、正面を見る70代の日本人女性の顔の寄り（無表情）。商材は写さない", "注釈": "※画像はイメージです。個人の感想であり効果効能を保証するものではありません。", "横転元": "01_1556797943.jpg", "完成": "https://drive.google.com/file/d/1OAYUvfCTrXWB-UmsaSCr-hgvnPkHNw9i/view?usp=drive_link", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "", "クライアント": "", "入稿日": ""}, {"id": "HB-2", "商材": "百聞之才錠", "略": "HB", "番号": "2", "工程": "納品ずみ", "担当": "こちらが検収する", "日数": 5, "依頼日": "2026-09-09", "比率": "横長(1200×628)／300KB未満", "訴求": "【右・特大2行】耳の特効薬\n国が承認しました", "絵": "【左】白地に、百聞之才錠のパッケージを両手で正面から持つ手元。素材フォルダの実物写真どおりに（形・色・ロゴを変えない）", "注釈": "※画像はイメージです。個人の感想であり効果効能を保証するものではありません。", "横転元": "02_113428800.jpg", "完成": "https://drive.google.com/file/d/1uUrPu0Efqg7WpDecPu0mjSDNYYBR4kOb/view?usp=drive_link", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "", "クライアント": "", "入稿日": ""}, {"id": "HB-3", "商材": "百聞之才錠", "略": "HB", "番号": "3", "工程": "納品ずみ", "担当": "こちらが検収する", "日数": 5, "依頼日": "2026-09-09", "比率": "横長(1200×628)／300KB未満", "訴求": "【右のテロップ3行】祖父(86)にプレゼントしたら\n「孫の声がはっきり聞こえる」\n【下の赤帯】耳が遠いご家族がいる方、絶対見て", "絵": "【左】食卓で孫の話を身を乗り出して聞いている86歳の祖父。商材は写さない\n\n祖父の表情は、声が聞きづらくて２度聞きしているような表情で", "注釈": "※画像はイメージです。個人の感想であり効果効能を保証するものではありません。", "横転元": "03_22041722.jpg", "完成": "https://drive.google.com/file/d/1HIaN2hbXrSGhVWBjRKWHuBCduGBejlsj/view?usp=drive_link", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "", "クライアント": "", "入稿日": ""}, {"id": "HB-4", "商材": "百聞之才錠", "略": "HB", "番号": "4", "工程": "納品ずみ", "担当": "こちらが検収する", "日数": 5, "依頼日": "2026-09-09", "比率": "正方形(1200×1200)／300KB未満", "訴求": "【上・特大2行】耳のジージーで\n眠れない方へ\n【下の小文字】耳鳴りが治って、ぐっすり眠れました／睡眠時によく耳鳴りを発症していた", "絵": "【中央】紺色の夜空と満月の地に、百聞之才錠のパッケージを1つ立てる。人物なし。素材フォルダの実物写真どおりに（形・色・ロゴを変えない）", "注釈": "※画像はイメージです。個人の感想であり効果効能を保証するものではありません。", "横転元": "04_1558661456.jpg", "完成": "https://drive.google.com/file/d/1IOoPCoM2TUkzSXBtkhLeZL0uXDtarhN5/view?usp=drive_link", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "", "クライアント": "", "入稿日": ""}, {"id": "HB-5", "商材": "百聞之才錠", "略": "HB", "番号": "5", "工程": "納品ずみ", "担当": "こちらが検収する", "日数": 5, "依頼日": "2026-09-09", "比率": "正方形(1200×1200)／300KB未満", "訴求": "【中央・特大】累計890万袋突破\n【上の小さい行】新聞でも紹介された耳鳴り治療薬\n【下の価格2段】通常8,000円超（税抜）→ 本日2,980円（税抜）", "絵": "【中央】金色の地に、百聞之才錠のパッケージを5つ横一列。人物なし。素材フォルダの実物写真どおりに（形・色・ロゴを変えない）", "注釈": "※画像はイメージです。個人の感想であり効果効能を保証するものではありません。", "横転元": "05_1556858363.jpg", "完成": "https://drive.google.com/file/d/1IidR4SOk3BwwfoRcmhFDEUUb7nbJInLY/view?usp=drive_link", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "", "クライアント": "", "入稿日": ""}, {"id": "HB-6", "商材": "百聞之才錠", "略": "HB", "番号": "6", "工程": "納品ずみ", "担当": "こちらが検収する", "日数": 5, "依頼日": "2026-09-09", "比率": "横長(1200×628)／300KB未満", "訴求": "【右上の帯】創業79年の老舗製薬会社\n【右・縦に3行】完全国内製造の\n耳鳴りの治療薬\n\n【下の小文字】薬局では買えません", "絵": "【左】紺色の夜空の地に、百聞之才錠のパッケージを1つ。素材フォルダの実物写真どおりに（形・色・ロゴを変えない）", "注釈": "※画像はイメージです。個人の感想であり効果効能を保証するものではありません。", "横転元": "06_22159157.jpg", "完成": "https://drive.google.com/file/d/1aKDLR9RkZ5nv9uBISro2rKWHZhxt23K6/view?usp=drive_link", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "", "クライアント": "", "入稿日": ""}, {"id": "HB-7", "商材": "百聞之才錠", "略": "HB", "番号": "7", "工程": "納品ずみ", "担当": "こちらが検収する", "日数": 5, "依頼日": "2026-09-09", "比率": "横長(1200×628)／300KB未満", "訴求": "【左のパネル・特大】補聴器の前に\nやること！\n【左のパネル・小さい行】耳鳴りは年齢や遺伝のせいではありません\n【右下の小さい行】自宅でたった１粒", "絵": "【右】白地に、百聞之才錠のパッケージを正面から1つ。素材フォルダの実物写真どおりに（形・色・ロゴを変えない）", "注釈": "※画像はイメージです。個人の感想であり効果効能を保証するものではありません。", "横転元": "07_1549920058.jpg", "完成": "https://drive.google.com/file/d/1X_NOZW7LLF70xcPqtSaMqrKgK4nzTxAT/view?usp=drive_link", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "", "クライアント": "", "入稿日": ""}, {"id": "HB-8", "商材": "百聞之才錠", "略": "HB", "番号": "8", "工程": "納品ずみ", "担当": "こちらが検収する", "日数": 5, "依頼日": "2026-09-09", "比率": "横長(1200×628)／300KB未満", "訴求": "【中央・特大】もう１度表示された方はラッキー\n【上の帯２行】在庫残りわずか\nー本日赤字覚悟ー\n【下の小さい行】約66％OFF", "絵": "【左】赤と金の地に、百聞之才錠のパッケージを1つ。人物なし。素材フォルダの実物写真どおりに（形・色・ロゴを変えない）", "注釈": "※画像はイメージです。個人の感想であり効果効能を保証するものではありません。", "横転元": "08_1558697157.jpg", "完成": "https://drive.google.com/file/d/1VUEg6x7HxYQt-i0I4cgwMraF9jxEerW1/view?usp=drive_link", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "", "クライアント": "", "入稿日": ""}, {"id": "HB-9", "商材": "百聞之才錠", "略": "HB", "番号": "9", "工程": "納品ずみ", "担当": "こちらが検収する", "日数": 5, "依頼日": "2026-09-09", "比率": "横長(1200×628)／300KB未満", "訴求": "【中央・特大2行】耳鳴り治せます！\n\n【右上の小文字】定期縛りなし", "絵": "【右】白地で、百聞之才錠のパッケージを胸の高さに持つ70代の男性。素材フォルダの実物写真どおりに（形・色・ロゴを変えない）", "注釈": "※画像はイメージです。個人の感想であり効果効能を保証するものではありません。", "横転元": "09_22324267.jpg", "完成": "https://drive.google.com/file/d/1ItVt6VCzxwJDxbCOXH0YMrL9PXtSYhhs/view?usp=drive_link", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "", "クライアント": "", "入稿日": ""}, {"id": "HB-10", "商材": "百聞之才錠", "略": "HB", "番号": "10", "工程": "納品ずみ", "担当": "こちらが検収する", "日数": 5, "依頼日": "2026-09-09", "比率": "正方形(1200×1200)／300KB未満", "訴求": "【上・特大】漢方の専門家「放置は絶対やめて」\n【中央】耳鳴りは脳が出している警報音です\n【下の帯】医療業界でも話題沸騰中／NHKでも特集された成分を配合", "絵": "【中央】白衣の漢方の専門家（60代）が正面を向いて話している。商材は写さない", "注釈": "※画像はイメージです。個人の感想であり効果効能を保証するものではありません。自社調べ", "横転元": "https://drive.google.com/file/d/13sOZhYynblRJx516l23aAi61AmA7bXgq/view?usp=drive_link", "完成": "https://drive.google.com/file/d/1zH3TXguSpnVFqzal-DRPUoohg0MG1qN9/view?usp=drive_link", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "", "クライアント": "", "入稿日": ""}, {"id": "HB-11", "商材": "百聞之才錠", "略": "HB", "番号": "11", "工程": "納品ずみ", "担当": "こちらが検収する", "日数": 5, "依頼日": "2026-09-09", "比率": "正方形(1200×1200)／300KB未満", "訴求": "【中央・特大】ネットで毎月完売\n【下の価格】在庫限り 本日66％OFF・送料無料", "絵": "【中央】淡い緑の地に、百聞之才錠のパッケージを4つ扇状に広げた物撮り。人物なし。素材フォルダの実物写真どおりに（形・色・ロゴを変えない）", "注釈": "※画像はイメージです。個人の感想であり効果効能を保証するものではありません。", "横転元": "11_22307528.jpg", "完成": "https://drive.google.com/file/d/1dmkz44qqNKRza5QEfNzhROoKGqoUjXP4/view?usp=drive_link", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "", "クライアント": "", "入稿日": ""}, {"id": "HB-12", "商材": "百聞之才錠", "略": "HB", "番号": "12", "工程": "納品ずみ", "担当": "こちらが検収する", "日数": 5, "依頼日": "2026-09-09", "比率": "横長(1200×628)／300KB未満", "訴求": "【右・特大１行】だいにち堂\n(会社のロゴも入れてください)\n\n【中央・横１行】百聞之才錠", "絵": "【左】白地に、百聞之才錠のパッケージを正面から1つ、大きく。素材フォルダの実物写真どおりに（形・色・ロゴを変えない）", "注釈": "※画像はイメージです。個人の感想であり効果効能を保証するものではありません。", "横転元": "12_113619291.jpg", "完成": "https://drive.google.com/file/d/1NTFebXDF5o1UUTqtLZ5-JMp0mlHLQUhm/view?usp=drive_link", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "", "クライアント": "", "入稿日": ""}, {"id": "HB-13", "商材": "百聞之才錠", "略": "HB", "番号": "13", "工程": "納品ずみ", "担当": "こちらが検収する", "日数": 5, "依頼日": "2026-09-09", "比率": "横長(1200×628)／300KB未満", "訴求": "【右の白文字4行】創業79年の製薬会社が、耳鳴りのために作りました。\n傷ついた聴覚神経を、強制的に修復する処方です。\n夜の「ジー」は、飲むだけで自宅で簡単。\n【右下の1行】自然由来の生薬をベースにした処方", "絵": "【左】黒い地に、内耳から脳へつながる血管が光っているCG。人物なし。商材は写さない", "注釈": "※画像はイメージです。個人の感想であり効果効能を保証するものではありません。作用の説明。記事LPに記載なし・動画の説明による", "横転元": "13_1558217892.jpg", "完成": "https://drive.google.com/file/d/1g9c2COsWKDnzA9La31-nH2EGqKNBskr4/view?usp=drive_link", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "", "クライアント": "", "入稿日": ""}, {"id": "HB-14", "商材": "百聞之才錠", "略": "HB", "番号": "14", "工程": "納品ずみ", "担当": "こちらが検収する", "日数": 5, "依頼日": "2026-09-09", "比率": "正方形(1200×1200)／300KB未満", "訴求": "【文字なし】（絵の補足: 朝、ベッドから起き上がれずに耳を押さえている70代の男性。訴求は見出しで「耳鳴りが辛くてベッドから出られない方へ」を言う）", "絵": "【全面】朝の寝室で、ベッドの縁に座って耳を手で押さえてうつむいている70代の日本人男性。商材は写さない", "注釈": "※画像はイメージです。個人の感想であり効果効能を保証するものではありません。", "横転元": "14_113177855.jpg", "完成": "https://drive.google.com/file/d/1ebcygULtPGA3cIGvxgs8vkwYlHVdKo_P/view?usp=drive_link", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "", "クライアント": "", "入稿日": ""}, {"id": "HB-15", "商材": "百聞之才錠", "略": "HB", "番号": "15", "工程": "納品ずみ", "担当": "こちらが検収する", "日数": 5, "依頼日": "2026-09-09", "比率": "正方形(1200×1200)／300KB未満", "訴求": "【上の黄色い帯】長引く耳鳴りの悩み…その正体に迫る！\n【右の専門家のセリフ】「原因は耳ではありません」\n【下・特大2行】医師の9割が注目\n補聴器は届きません\n【左の解説パネル】耳の奥の血流", "絵": "【右】白衣を着た60代女性の薬剤師が、人差し指を立てて正面を向いて話している。左に耳の断面の解説パネル。商材は写さない", "注釈": "※画像はイメージです。個人の感想であり効果効能を保証するものではありません。自社調べ", "横転元": "15_113355025.jpg", "完成": "https://drive.google.com/file/d/1jydVX1wFQDWtwfrR9RrwZcF4KQF2XHVG/view?usp=drive_link", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "", "クライアント": "", "入稿日": ""}, {"id": "HB-16", "商材": "百聞之才錠", "略": "HB", "番号": "16", "工程": "納品ずみ", "担当": "こちらが検収する", "日数": 5, "依頼日": "2026-09-09", "比率": "横長(1200×628)／300KB未満", "訴求": "【文字なし】（絵の補足: 台所で薬を手に取った日常の一枚。訴求は見出しで「薬局では買えません。ネットで毎月完売の耳鳴りの治療薬」を言う）", "絵": "【中央】木目の壁の前で、百聞之才錠のパッケージと箱を両手で持っている。斜めから自然光。素材フォルダの実物写真どおりに（形・色・ロゴを変えない）", "注釈": "※画像はイメージです。個人の感想であり効果効能を保証するものではありません。", "横転元": "16_113459689.jpg", "完成": "https://drive.google.com/file/d/1gikhtYrdFz0xGPF9cTR6-S4A3AYPnvVY/view?usp=drive_link", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "", "クライアント": "", "入稿日": ""}, {"id": "HB-17", "商材": "百聞之才錠", "略": "HB", "番号": "17", "工程": "納品ずみ", "担当": "こちらが検収する", "日数": 5, "依頼日": "2026-09-09", "比率": "横長(1200×628)／300KB未満", "訴求": "【右の赤い面・特大2行】2,980円で\nあの「ジー」が!? 解決!?", "絵": "【左】白い机に、百聞之才錠の個包装と箱を無造作に散らした俯瞰。右に赤い面を置く余白。人物なし。素材フォルダの実物写真どおりに（形・色・ロゴを変えない）", "注釈": "※画像はイメージです。個人の感想であり効果効能を保証するものではありません。", "横転元": "17_113508988.jpg", "完成": "https://drive.google.com/file/d/1I1SsDPqC-hrKQSo8z6_PWw7RCQmnYKbx/view?usp=drive_link", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "", "クライアント": "", "入稿日": ""}, {"id": "HB-18", "商材": "百聞之才錠", "略": "HB", "番号": "18", "工程": "納品ずみ", "担当": "こちらが検収する", "日数": 5, "依頼日": "2026-09-09", "比率": "横長(1200×628)／300KB未満", "訴求": "【中央・毛筆の縦書き特大】百聞之才錠\n【右上の白い枠】国が承認した耳鳴りの治療薬", "絵": "【右】黒い地に金の箔。百聞之才錠のパッケージを片手で胸の高さに持つ70代男性の手元。素材フォルダの実物写真どおりに（形・色・ロゴを変えない）", "注釈": "※画像はイメージです。個人の感想であり効果効能を保証するものではありません。", "横転元": "18_113691751.jpg", "完成": "https://drive.google.com/file/d/1bk2xhesk3no7OFlM8167SxEaP1eD0gj3/view?usp=drive_link", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "", "クライアント": "", "入稿日": ""}, {"id": "HB-19", "商材": "百聞之才錠", "略": "HB", "番号": "19", "工程": "納品ずみ", "担当": "こちらが検収する", "日数": 4, "依頼日": "2026-09-10", "比率": "横長(1200×628)／300KB未満", "訴求": "【右の縦組み・特大】定期ではございません 【上の小さい行】耳鳴りを卒業したい70代の方へ 【左下の小さい行】何回買えという縛りはありません／送料無料でお届け", "絵": "【左】赤いギフトボックスに、百聞之才錠のパッケージをぎっしり詰めたものを、70代の男性が両手で正面に差し出している手元。右に縦組みの文字を置く余白を大きく空ける。素材フォルダの実物写真どおりに（形・色・ロゴを変えない）", "注釈": "※画像はイメージです。個人の感想であり効果効能を保証するものではありません。", "横転元": "19_1558626980.jpg", "完成": "https://drive.google.com/file/d/1kOOXuQ7-O6tmGxPdv4pC5Bo4ST8CbNbA/view?usp=drive_link", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "", "クライアント": "", "入稿日": ""}, {"id": "HB-20", "商材": "百聞之才錠", "略": "HB", "番号": "20", "工程": "依頼済", "担当": "外注が作っている", "日数": 0, "依頼日": "2026-09-14", "比率": "横長(1200×628)／300KB未満", "訴求": "【左の赤ベタ・白の縦組み特大】耳鳴りは治ります\n【右の赤ベタ・白の縦組み特大】飲んで効く治療薬", "絵": "【中央】白地に、ボトルを片手で正面に持って見せる70代の日本人男性の手元。商材は人の手に。素材フォルダの実物写真どおりに（形・色・ロゴを変えない。白い丸ボトルに白いキャップ／中央のベージュのラベルに濃い紫と金の額／金と白で「百聞之才錠」／下に黄色い帯で「ひゃくぶんのさいじょう」）", "注釈": "※画像はイメージです。個人の感想であり効果効能を保証するものではありません。", "横転元": "20_1556103375.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/百聞之才錠_横転元_2026-09-14/20_1556103375.jpg", "クライアント": "", "入稿日": ""}, {"id": "HB-21", "商材": "百聞之才錠", "略": "HB", "番号": "21", "工程": "依頼済", "担当": "外注が作っている", "日数": 0, "依頼日": "2026-09-14", "比率": "横長(1200×628)／300KB未満", "訴求": "【右上・白の特大2行】70代の方は\n絶対見て\n【右下・白地に紫の特大】2,980円\n【右下の小さい行】国が承認した耳鳴り治療薬", "絵": "【左】濃い紫の地に、ボトルを片手で持ち上げて見せる70代の日本人女性の手元。商材は人の手に。素材フォルダの実物写真どおりに（形・色・ロゴを変えない。白い丸ボトルに白いキャップ／中央のベージュのラベルに濃い紫と金の額／金と白で「百聞之才錠」／下に黄色い帯で「ひゃくぶんのさいじょう」）", "注釈": "※画像はイメージです。個人の感想であり効果効能を保証するものではありません。", "横転元": "21_22236383.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/百聞之才錠_横転元_2026-09-14/21_22236383.jpg", "クライアント": "", "入稿日": ""}, {"id": "HB-22", "商材": "百聞之才錠", "略": "HB", "番号": "22", "工程": "依頼済", "担当": "外注が作っている", "日数": 0, "依頼日": "2026-09-14", "比率": "横長(1200×628)／300KB未満", "訴求": "【右の見出し1行】東大が研究に成功した成分を配合\n【右・極太の特大】耳鳴りを\n根本から治す\n【右下の小さい行】生薬ベースの有効成分4種", "絵": "【左】白地に、ボトルの蓋を開け、手のひらに錠剤を4粒のせて見せる70代の日本人男性の手元。商材は人の手に。素材フォルダの実物写真どおりに（形・色・ロゴを変えない。白い丸ボトルに白いキャップ／中央のベージュのラベルに濃い紫と金の額／金と白で「百聞之才錠」／下に黄色い帯で「ひゃくぶんのさいじょう」）", "注釈": "※画像はイメージです。個人の感想であり効果効能を保証するものではありません。研究内容は記事LP参照", "横転元": "22_1558262734.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/百聞之才錠_横転元_2026-09-14/22_1558262734.jpg", "クライアント": "", "入稿日": ""}, {"id": "HB-23", "商材": "百聞之才錠", "略": "HB", "番号": "23", "工程": "依頼済", "担当": "外注が作っている", "日数": 0, "依頼日": "2026-09-14", "比率": "横長(1200×628)／300KB未満", "訴求": "【上の赤帯・黒タグ】特集\n【上の赤帯・白文字】NHKでも特集された成分を実感レベルまで配合\n【右の赤ベタ・黄色い縦組み特大】これ一択\n【右下の小さい行】耳鳴りにはこれ一択です", "絵": "【左】赤い地に、ボトルを2本、片手で抱えて見せる70代の日本人女性の手元。商材は人の手に。素材フォルダの実物写真どおりに（形・色・ロゴを変えない。白い丸ボトルに白いキャップ／中央のベージュのラベルに濃い紫と金の額／金と白で「百聞之才錠」／下に黄色い帯で「ひゃくぶんのさいじょう」）", "注釈": "※画像はイメージです。個人の感想であり効果効能を保証するものではありません。使用者の感想。2026年9月時点・自社調べ", "横転元": "23_1557863495.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/百聞之才錠_横転元_2026-09-14/23_1557863495.jpg", "クライアント": "", "入稿日": ""}, {"id": "HB-24", "商材": "百聞之才錠", "略": "HB", "番号": "24", "工程": "依頼済", "担当": "外注が作っている", "日数": 0, "依頼日": "2026-09-14", "比率": "正方形(1200×1200)／300KB未満", "訴求": "【上の小さい囲み】あの「ジー」がまだ続く70代の方へ\n【左・特大】まだ治せます\n【左下の小さい行】飲んで効く／通常8,000円が2,980円", "絵": "【右】明るいベージュの地に、ボトルを1本立てる。左は特大の文字を置く余白として大きく空ける。人物なし。素材フォルダの実物写真どおりに（形・色・ロゴを変えない。白い丸ボトルに白いキャップ／中央のベージュのラベルに濃い紫と金の額／金と白で「百聞之才錠」／下に黄色い帯で「ひゃくぶんのさいじょう」）", "注釈": "※画像はイメージです。個人の感想であり効果効能を保証するものではありません。", "横転元": "24_22205094.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/百聞之才錠_横転元_2026-09-14/24_22205094.jpg", "クライアント": "", "入稿日": ""}, {"id": "HB-25", "商材": "百聞之才錠", "略": "HB", "番号": "25", "工程": "依頼済", "担当": "外注が作っている", "日数": 0, "依頼日": "2026-09-14", "比率": "正方形(1200×1200)／300KB未満", "訴求": "【下の緑の帯】医師の9割が注目\n【下の赤い特大】8,000円 ▶ 2,980円\n【下の小さい行】1日3粒、生薬ベースの有効成分4種", "絵": "【上】白い地に、ボトルと錠剤を4粒並べた物撮り。**上に画像・下にテキストの上下2分割**（決めごと580）。人物なし。素材フォルダの実物写真どおりに（形・色・ロゴを変えない。白い丸ボトルに白いキャップ／中央のベージュのラベルに濃い紫と金の額／金と白で「百聞之才錠」／下に黄色い帯で「ひゃくぶんのさいじょう」）", "注釈": "※画像はイメージです。個人の感想であり効果効能を保証するものではありません。自社調べ", "横転元": "25_1559153697.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/百聞之才錠_横転元_2026-09-14/25_1559153697.jpg", "クライアント": "", "入稿日": ""}, {"id": "HB-26", "商材": "百聞之才錠", "略": "HB", "番号": "26", "工程": "依頼済", "担当": "外注が作っている", "日数": 0, "依頼日": "2026-09-14", "比率": "横長(1200×628)／300KB未満", "訴求": "【上の見出し1行】「祖父（86歳）にプレゼントしました」\n【赤いリボン章】国が承認した耳鳴り治療薬\n【リボンの下】贈って2,980円", "絵": "【左】濃い赤の地に、ボトルを1本、包装紙から出して手渡している70代の日本人女性と80代の男性の手元。商材は人の手に。素材フォルダの実物写真どおりに（形・色・ロゴを変えない。白い丸ボトルに白いキャップ／中央のベージュのラベルに濃い紫と金の額／金と白で「百聞之才錠」／下に黄色い帯で「ひゃくぶんのさいじょう」）", "注釈": "※画像はイメージです。個人の感想であり効果効能を保証するものではありません。", "横転元": "26_1559379472.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/百聞之才錠_横転元_2026-09-14/26_1559379472.jpg", "クライアント": "", "入稿日": ""}, {"id": "HB-27", "商材": "百聞之才錠", "略": "HB", "番号": "27", "工程": "依頼済", "担当": "外注が作っている", "日数": 0, "依頼日": "2026-09-14", "比率": "横長(1200×628)／300KB未満", "訴求": "【左・黒文字4行】「孫の声が\nはっきり\n聞こえました」\n（70代女性・飲んで3週間）", "絵": "【右】明るい居間で、孫と向かい合って話を聞いている70代の日本人女性。手前にボトルを1本置く。商材は写す。素材フォルダの実物写真どおりに（形・色・ロゴを変えない。白い丸ボトルに白いキャップ／中央のベージュのラベルに濃い紫と金の額／金と白で「百聞之才錠」／下に黄色い帯で「ひゃくぶんのさいじょう」）", "注釈": "※画像はイメージです。個人の感想であり効果効能を保証するものではありません。", "横転元": "27_1557922211.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/百聞之才錠_横転元_2026-09-14/27_1557922211.jpg", "クライアント": "", "入稿日": ""}, {"id": "HB-28", "商材": "百聞之才錠", "略": "HB", "番号": "28", "工程": "依頼済", "担当": "外注が作っている", "日数": 0, "依頼日": "2026-09-14", "比率": "正方形(1200×1200)／300KB未満", "訴求": "【上・白文字2行】TVの音を、\n大音量にしなくてよくなった\n【下・白文字1行】70代女性の声／TVが遠い方へ、飲んで効く治療薬", "絵": "【中央】濃い茶色の地に、リモコンを持つ70代の日本人女性の手元と、その隣にボトルを1本置く。商材は写す。素材フォルダの実物写真どおりに（形・色・ロゴを変えない。白い丸ボトルに白いキャップ／中央のベージュのラベルに濃い紫と金の額／金と白で「百聞之才錠」／下に黄色い帯で「ひゃくぶんのさいじょう」）", "注釈": "※画像はイメージです。個人の感想であり効果効能を保証するものではありません。", "横転元": "28_22116078.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/百聞之才錠_横転元_2026-09-14/28_22116078.jpg", "クライアント": "", "入稿日": ""}, {"id": "HB-29", "商材": "百聞之才錠", "略": "HB", "番号": "29", "工程": "依頼済", "担当": "外注が作っている", "日数": 0, "依頼日": "2026-09-14", "比率": "横長(1200×628)／300KB未満", "訴求": "【右・特大2行】耳鳴りは、\n治ります。", "絵": "【左】白地に、ボトルを片手で正面に持つ70代の日本人男性の手元。商材は人の手に。素材フォルダの実物写真どおりに（形・色・ロゴを変えない。白い丸ボトルに白いキャップ／中央のベージュのラベルに濃い紫と金の額／金と白で「百聞之才錠」／下に黄色い帯で「ひゃくぶんのさいじょう」）", "注釈": "※画像はイメージです。個人の感想であり効果効能を保証するものではありません。", "横転元": "29_21621825.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/百聞之才錠_横転元_2026-09-14/29_21621825.jpg", "クライアント": "", "入稿日": ""}, {"id": "HB-30", "商材": "百聞之才錠", "略": "HB", "番号": "30", "工程": "依頼済", "担当": "外注が作っている", "日数": 0, "依頼日": "2026-09-14", "比率": "横長(1200×628)／300KB未満", "訴求": "【左の赤ベタ・白の縦組み特大】朝がいちばん\nつらい方へ\n【左の小さい縦書き】耳鳴りでベッドから出られない70代の方へ", "絵": "【右】黒い地に、寝室のベッドの縁に腰かけて耳を押さえている70代の日本人男性。手前にボトルを1本置く。商材は写す。素材フォルダの実物写真どおりに（形・色・ロゴを変えない。白い丸ボトルに白いキャップ／中央のベージュのラベルに濃い紫と金の額／金と白で「百聞之才錠」／下に黄色い帯で「ひゃくぶんのさいじょう」）", "注釈": "※画像はイメージです。個人の感想であり効果効能を保証するものではありません。", "横転元": "30_1557190263.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/百聞之才錠_横転元_2026-09-14/30_1557190263.jpg", "クライアント": "", "入稿日": ""}, {"id": "HB-31", "商材": "百聞之才錠", "略": "HB", "番号": "31", "工程": "依頼済", "担当": "外注が作っている", "日数": 0, "依頼日": "2026-09-14", "比率": "正方形(1200×1200)／300KB未満", "訴求": "【上の小さい行】「75歳の両親も使っています」\n【上・白の特大】家族で飲んでいます。\n【左の丸バッジ】医師の9割が注目\n【左右の縦組みラベル2つ】生薬ベースの有効成分4種／国が承認した治療薬\n【下の白い帯】通常8,000円 ▶ 2,980円", "絵": "【中央】青い地に、ボトルを1本、親から子へ手渡している70代と40代の日本人の手元。商材は人の手に。素材フォルダの実物写真どおりに（形・色・ロゴを変えない。白い丸ボトルに白いキャップ／中央のベージュのラベルに濃い紫と金の額／金と白で「百聞之才錠」／下に黄色い帯で「ひゃくぶんのさいじょう」）", "注釈": "※画像はイメージです。個人の感想であり効果効能を保証するものではありません。自社調べ", "横転元": "31_1558466893.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/百聞之才錠_横転元_2026-09-14/31_1558466893.jpg", "クライアント": "", "入稿日": ""}, {"id": "HB-32", "商材": "百聞之才錠", "略": "HB", "番号": "32", "工程": "依頼済", "担当": "外注が作っている", "日数": 0, "依頼日": "2026-09-14", "比率": "横長(1200×628)／300KB未満", "訴求": "【右・縦組みの赤い特大】これ\n一択", "絵": "【左】白地に、ボトルを片手で立てて持つ70代の日本人女性の手元。商材は人の手に。素材フォルダの実物写真どおりに（形・色・ロゴを変えない。白い丸ボトルに白いキャップ／中央のベージュのラベルに濃い紫と金の額／金と白で「百聞之才錠」／下に黄色い帯で「ひゃくぶんのさいじょう」）", "注釈": "※画像はイメージです。個人の感想であり効果効能を保証するものではありません。使用者の感想。2026年9月時点・自社調べ", "横転元": "32_22322013.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/百聞之才錠_横転元_2026-09-14/32_22322013.jpg", "クライアント": "", "入稿日": ""}, {"id": "HB-33", "商材": "百聞之才錠", "略": "HB", "番号": "33", "工程": "依頼済", "担当": "外注が作っている", "日数": 0, "依頼日": "2026-09-14", "比率": "横長(1200×628)／300KB未満", "訴求": "【左上・白の見出し2行】薬局では\n買えません\n【右・極太の縦組み特大2語】耳鳴\n治療\n【下の小さい行】耳鳴りを諦めた60代・70代へ／2,980円", "絵": "【全面】濃い紺の地に、ボトルを1本斜めに置いた物撮り。右は極太の縦組みを置く余白として大きく空ける。人物なし。素材フォルダの実物写真どおりに（形・色・ロゴを変えない。白い丸ボトルに白いキャップ／中央のベージュのラベルに濃い紫と金の額／金と白で「百聞之才錠」／下に黄色い帯で「ひゃくぶんのさいじょう」）", "注釈": "※画像はイメージです。個人の感想であり効果効能を保証するものではありません。", "横転元": "33_1552849549.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/百聞之才錠_横転元_2026-09-14/33_1552849549.jpg", "クライアント": "", "入稿日": ""}, {"id": "HB-34", "商材": "百聞之才錠", "略": "HB", "番号": "34", "工程": "依頼済", "担当": "外注が作っている", "日数": 0, "依頼日": "2026-09-14", "比率": "横長(1200×628)／300KB未満", "訴求": "【中央・縦組みの特大】あの「ジー」を\n止めにいく\n【左の丸いバッジ2つ】NHKでも特集／医師の9割が注目\n【縦の帯】二九八〇円\n【右端の縦帯】耳鳴りが長く続いている方へ", "絵": "【左】深い紫の地に、ボトルを片手で立てて持つ70代の日本人男性の手元。商材は人の手に。素材フォルダの実物写真どおりに（形・色・ロゴを変えない。白い丸ボトルに白いキャップ／中央のベージュのラベルに濃い紫と金の額／金と白で「百聞之才錠」／下に黄色い帯で「ひゃくぶんのさいじょう」）", "注釈": "※画像はイメージです。個人の感想であり効果効能を保証するものではありません。自社調べ", "横転元": "34_22328302.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/百聞之才錠_横転元_2026-09-14/34_22328302.jpg", "クライアント": "", "入稿日": ""}, {"id": "HB-35", "商材": "百聞之才錠", "略": "HB", "番号": "35", "工程": "依頼済", "担当": "外注が作っている", "日数": 0, "依頼日": "2026-09-14", "比率": "正方形(1200×1200)／300KB未満", "訴求": "【上の黄色い地・見出し3行】年のせいだと\n諦めていませんか\n耳鳴りは治ります\n【上の見出しの赤いハイライト】治ります\n【下の赤い帯】通常8,000円が2,980円", "絵": "【上】白い診察室で、ボトルを片手で示している医師の手元。【下】黄色い地に見出し。**上に画像・下にテキストの上下2分割**（決めごと580）。商材は人の手に。素材フォルダの実物写真どおりに（形・色・ロゴを変えない。白い丸ボトルに白いキャップ／中央のベージュのラベルに濃い紫と金の額／金と白で「百聞之才錠」／下に黄色い帯で「ひゃくぶんのさいじょう」）", "注釈": "※画像はイメージです。個人の感想であり効果効能を保証するものではありません。", "横転元": "35_1558371788.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/百聞之才錠_横転元_2026-09-14/35_1558371788.jpg", "クライアント": "", "入稿日": ""}, {"id": "HB-36", "商材": "百聞之才錠", "略": "HB", "番号": "36", "工程": "依頼済", "担当": "外注が作っている", "日数": 0, "依頼日": "2026-09-14", "比率": "正方形(1200×1200)／300KB未満", "訴求": "【上・黒文字1行】「あの音が、静かになりました」（80歳男性）\n【下の金の立体文字2行】＼飲んで効く／\n耳鳴り治療薬\n【最下段・金の立体文字】二九八〇円", "絵": "【上】静かな和室の卓に、ボトルを1本と錠剤を4粒並べた物撮り。奥に湯呑みを置いて生活感を出す。**上に画像・下にテキストの上下2分割**（決めごと580）。人物なし。※**下段の文字は金の箔押しの立体文字にする**（本人の直し・デイリーワン53の型）。素材フォルダの実物写真どおりに（形・色・ロゴを変えない。白い丸ボトルに白いキャップ／中央のベージュのラベルに濃い紫と金の額／金と白で「百聞之才錠」／下に黄色い帯で「ひゃくぶんのさいじょう」）", "注釈": "※画像はイメージです。個人の感想であり効果効能を保証するものではありません。", "横転元": "36_2986883731744.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/百聞之才錠_横転元_2026-09-14/36_2986883731744.jpg", "クライアント": "", "入稿日": ""}, {"id": "HB-37", "商材": "百聞之才錠", "略": "HB", "番号": "37", "工程": "依頼済", "担当": "外注が作っている", "日数": 0, "依頼日": "2026-09-14", "比率": "正方形(1200×1200)／300KB未満", "訴求": "【左・黄色の縦組み特大】耳鳴りは治ります\n【右・白の縦組み2行】国が承認した\n耳鳴り治療薬\n【下の小さい行】生薬ベースの有効成分4種／2,980円", "絵": "【全面】濃い紫の地に、ボトルを1本右下に小さく持つ70代の日本人女性の手元。縦組みを2列置く余白を大きく取る。商材は人の手に。素材フォルダの実物写真どおりに（形・色・ロゴを変えない。白い丸ボトルに白いキャップ／中央のベージュのラベルに濃い紫と金の額／金と白で「百聞之才錠」／下に黄色い帯で「ひゃくぶんのさいじょう」）", "注釈": "※画像はイメージです。個人の感想であり効果効能を保証するものではありません。", "横転元": "37_1558589761.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/百聞之才錠_横転元_2026-09-14/37_1558589761.jpg", "クライアント": "", "入稿日": ""}, {"id": "HB-38", "商材": "百聞之才錠", "略": "HB", "番号": "38", "工程": "依頼済", "担当": "外注が作っている", "日数": 0, "依頼日": "2026-09-14", "比率": "横長(1200×628)／300KB未満", "訴求": "【左・明朝の白い見出し2行】聞こえる喜びを、\nもう一度。\n【罫線の下】東大が研究に成功した成分を配合\n【下の小さい行】孫の声が遠い70代の方へ／有効成分4種", "絵": "【右】明るいグレーの地に、ボトルを両手で静かに持つ70代の日本人女性の手元。商材は人の手に。素材フォルダの実物写真どおりに（形・色・ロゴを変えない。白い丸ボトルに白いキャップ／中央のベージュのラベルに濃い紫と金の額／金と白で「百聞之才錠」／下に黄色い帯で「ひゃくぶんのさいじょう」）", "注釈": "※画像はイメージです。個人の感想であり効果効能を保証するものではありません。研究内容は記事LP参照", "横転元": "38_1559226446.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/百聞之才錠_横転元_2026-09-14/38_1559226446.jpg", "クライアント": "", "入稿日": ""}, {"id": "HB-39", "商材": "百聞之才錠", "略": "HB", "番号": "39", "工程": "依頼済", "担当": "外注が作っている", "日数": 0, "依頼日": "2026-09-14", "比率": "横長(1200×628)／300KB未満", "訴求": "【上の画像の下・極太ゴシック4行】「ずっと『ジー』が止まらないシニアの耳、実は…」\nNHKでも特集された成分を配合。\n国が承認した耳鳴り治療薬が判明！\nまるで別人級\n【最下段の小さい行】通常8,000円が2,980円", "絵": "【上】70代の日本人男性が静かな部屋で耳に手を当てている寄りの写真1枚。**左右2枚の対比にしない**（決めごと620。対比は審査で落ちた実例がある）。【下】白地に極太ゴシックの記事風見出し。商材は写さない。", "注釈": "※画像はイメージです。個人の感想であり効果効能を保証するものではありません。", "横転元": "39_1558937232.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/百聞之才錠_横転元_2026-09-14/39_1558937232.jpg", "クライアント": "", "入稿日": ""}], "ページ": "HB", "絞り": "百聞之才錠"}</script>
+<script>
+const D = JSON.parse(document.getElementById('data').textContent);
+const MINE = ['納品ずみ','入稿待ち','審査おちた','配信待ち'];
+const DONE = ['配信中'];
+const kind = s => MINE.includes(s) ? 'mine' : DONE.includes(s) ? 'done' : 'wait';
+const 順 = D.工程.map(x => x.名);
+let fStage = null, fPj = null, fQ = '';
+
+/* 案件ナビ */
+const nav = document.getElementById('nav');
+nav.innerHTML = [['index', 'ぜんぶ', '']].concat(
+  Object.entries(D.略号).map(([名, 略]) => [略, 名, 略])
+).map(([f, 名, 略]) =>
+  `<a href="${f}.html"${D.ページ === f ? ' aria-current="page"' : ''}>${名}`
+  + (略 ? `<b>${略}</b>` : '') + `</a>`).join('');
+
+document.title = (D.絞り ? D.絞り + '　' : '') + 'CR工程板';
+if (D.絞り) document.querySelector('h1').textContent = D.絞り;
+document.getElementById('sub').textContent =
+  `${D.作成} 時点　シートの写し${D.写し[D.絞り] ? '（' + D.写し[D.絞り] + '）' : ''}から作っている　`
+  + (D.絞り ? `このページは${D.絞り}の${D.CR.length}本` : `7案件 ${D.CR.length}本`);
+const cnt = k => D.CR.filter(c => kind(c.工程) === k).length;
+nMine.textContent = cnt('mine'); nWait.textContent = cnt('wait');
+nAll.textContent = D.CR.length;
+
+/* 工程レール */
+const rail = document.getElementById('rail');
+D.工程.forEach(st => {
+  const n = D.CR.filter(c => c.工程 === st.名).length;
+  const b = document.createElement('button');
+  b.className = 'stage ' + kind(st.名);
+  b.setAttribute('aria-pressed', 'false');
+  b.innerHTML = `<span class="sn">${st.名}</span>`
+    + `<span class="sc${n ? '' : ' zero'}">${n || '·'}</span>`
+    + `<span class="st">${st.担当}</span>`;
+  b.onclick = () => { fStage = fStage === st.名 ? null : st.名; draw(); };
+  b.dataset.stage = st.名;
+  rail.appendChild(b);
+});
+
+/* 案件の絞り込み */
+const pjs = document.getElementById('pjs');
+if (D.絞り) document.getElementById('pjs').hidden = true;
+Object.entries(D.略号).forEach(([名, 略]) => {
+  const n = D.CR.filter(c => c.商材 === 名).length;
+  const b = document.createElement('button');
+  b.className = 'f'; b.setAttribute('aria-pressed', 'false');
+  b.textContent = `${略}　${名}　${n}`;
+  b.onclick = () => { fPj = fPj === 名 ? null : 名; draw(); };
+  b.dataset.pj = 名;
+  pjs.appendChild(b);
+});
+
+/* 止まり */
+const stalls = document.getElementById('stalls');
+(() => {
+  const g = {};
+  D.CR.filter(c => c.日数 >= 3).forEach(c => {
+    const k = c.商材 + '|' + c.工程;
+    (g[k] = g[k] || []).push(c);
+  });
+  const list = Object.entries(g).map(([k, v]) => {
+    const [pj, st] = k.split('|');
+    return { pj, st, v, k: kind(st), max: Math.max(...v.map(c => c.日数)) };
+  }).sort((a, b) => (a.k === 'mine' ? 0 : 1) - (b.k === 'mine' ? 0 : 1) || b.max - a.max);
+  if (!list.length) { stalls.innerHTML = '<div class="stall">止まっているものは無い。</div>'; return; }
+  list.forEach(x => {
+    const d = document.createElement('div');
+    d.className = 'stall ' + x.k;
+    const ids = x.v.slice(0, 14).map(c => `<button class="chip" data-id="${c.id}">${c.id}</button>`).join('')
+      + (x.v.length > 14 ? `<span class="cnt">ほか${x.v.length - 14}</span>` : '');
+    d.innerHTML = `<span class="who">${x.st}</span><span class="pj">${x.pj}</span>`
+      + `<span class="cnt">${x.v.length}本・最長${x.max}日 → ${D.工程.find(s => s.名 === x.st).担当}</span>`
+      + `<span class="ids">${ids}</span>`;
+    stalls.appendChild(d);
+  });
+})();
+
+/* 登録簿 */
+const rows = document.getElementById('rows');
+function draw() {
+  document.querySelectorAll('.stage').forEach(b =>
+    b.setAttribute('aria-pressed', b.dataset.stage === fStage));
+  document.querySelectorAll('.f[data-pj]').forEach(b =>
+    b.setAttribute('aria-pressed', b.dataset.pj === fPj));
+  const q = fQ.trim().toLowerCase();
+  const list = D.CR.filter(c =>
+    (!fStage || c.工程 === fStage) && (!fPj || c.商材 === fPj) &&
+    (!q || c.id.toLowerCase().includes(q) || (c.訴求 + c.絵 + c.検収).toLowerCase().includes(q))
+  ).sort((a, b) => 順.indexOf(a.工程) - 順.indexOf(b.工程) || b.日数 - a.日数);
+  rows.innerHTML = list.map(c => {
+    const k = kind(c.工程);
+    return `<tr class="${k}" data-id="${c.id}">`
+      + `<td class="id">${c.id}</td>`
+      + `<td class="stg"><span class="pill ${k}">${c.工程}</span></td>`
+      + `<td class="hx">${D.絞り ? c.担当 : c.商材}</td>`
+      + `<td class="txt hx">${(c.訴求 || c.絵 || '').replace(/\n/g, ' ').slice(0, 70)}</td>`
+      + `<td class="d">${c.日数}日</td></tr>`;
+  }).join('');
+  document.getElementById('none').hidden = list.length > 0;
+}
+
+/* 中身 */
+const sheet = document.getElementById('sheet'), scrim = document.getElementById('scrim');
+function open_(id) {
+  const c = D.CR.find(x => x.id === id); if (!c) return;
+  const k = kind(c.工程);
+  sId.textContent = c.id;
+  sPj.textContent = `${c.商材}　${c.番号}番　${c.比率 || ''}`;
+  sTurn.className = 'turn ' + k;
+  sTurn.innerHTML = `<b>${c.工程}</b> <span>→ ${c.担当}・${c.日数}日</span>`;
+  const F = [['依頼日', c.依頼日], ['入れる訴求', c.訴求], ['絵の指示', c.絵],
+    ['入れる注釈', c.注釈], ['横転元', c.横転元], ['元の実物', c.元の実物],
+    ['検収', c.検収], ['審査', c.審査], ['おちた理由', c.落ち理由], ['配信', c.配信],
+    ['クライアント', c.クライアント], ['入稿日', c.入稿日]];
+  sDl.innerHTML = F.filter(([, v]) => v).map(([n, v]) => {
+    const mono = ['横転元', '元の実物', '依頼日', '入稿日'].includes(n);
+    return `<dt>${n}</dt><dd class="${mono ? 'mono' : ''}">${esc(v)}</dd>`;
+  }).join('') + (c.完成 ? `<dt>完成CR</dt><dd class="mono"><a href="${c.完成}" target="_blank" rel="noopener">Driveで開く</a></dd>` : '');
+  sheet.classList.add('open'); scrim.classList.add('open');
+  sheet.setAttribute('aria-hidden', 'false'); document.getElementById('close').focus();
+}
+const esc = s => String(s).replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m]));
+function shut() {
+  sheet.classList.remove('open'); scrim.classList.remove('open');
+  sheet.setAttribute('aria-hidden', 'true');
+}
+document.getElementById('close').onclick = shut;
+scrim.onclick = shut;
+addEventListener('keydown', e => { if (e.key === 'Escape') shut(); });
+document.body.addEventListener('click', e => {
+  const t = e.target.closest('[data-id]'); if (t) open_(t.dataset.id);
+});
+document.getElementById('q').addEventListener('input', e => { fQ = e.target.value; draw(); });
+document.getElementById('clear').onclick = () => {
+  fStage = fPj = null; fQ = ''; document.getElementById('q').value = ''; draw();
+};
+if (!D.絞り) document.getElementById('th3').textContent = '案件';
+draw();
+</script>

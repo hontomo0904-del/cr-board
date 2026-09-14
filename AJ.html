@@ -1,0 +1,369 @@
+<title>CR工程板</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ground:#f1f2ef; --surface:#fbfbfa; --sunk:#e8eae5;
+  --ink:#191b1e; --ink2:#5c6166; --ink3:#8b9096;
+  --rule:#d7d9d4; --rule2:#c3c6c0;
+  --shu:#b5392e; --shu-soft:#f3e2e0; --shu-line:#e0bdb8;
+  --ochre:#8c6d1f; --ochre-soft:#f2ecda; --ochre-line:#ddd0a8;
+  --matcha:#2f6b52; --matcha-soft:#e0ece6; --matcha-line:#b6d2c5;
+  --disp:"Zen Kaku Gothic New",-apple-system,"Hiragino Sans",sans-serif;
+  --body:"Noto Sans JP",-apple-system,"Hiragino Sans",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#15171a; --surface:#1d2024; --sunk:#101215;
+    --ink:#e7e5e0; --ink2:#a2a7ad; --ink3:#71767d;
+    --rule:#2e3238; --rule2:#3d424a;
+    --shu:#e0675a; --shu-soft:#33211f; --shu-line:#5a322d;
+    --ochre:#cda546; --ochre-soft:#2b2618; --ochre-line:#54472447;
+    --matcha:#61b393; --matcha-soft:#17281f; --matcha-line:#2d4a3b;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#15171a; --surface:#1d2024; --sunk:#101215;
+  --ink:#e7e5e0; --ink2:#a2a7ad; --ink3:#71767d;
+  --rule:#2e3238; --rule2:#3d424a;
+  --shu:#e0675a; --shu-soft:#33211f; --shu-line:#5a322d;
+  --ochre:#cda546; --ochre-soft:#2b2618; --ochre-line:#544724;
+  --matcha:#61b393; --matcha-soft:#17281f; --matcha-line:#2d4a3b;
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font-family:var(--body);
+  font-size:14px;line-height:1.7;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px 90px}
+/* 案件ナビ */
+nav{display:flex;gap:0;overflow-x:auto;border-bottom:1px solid var(--rule);
+  margin:0 -20px 22px;padding:0 20px;position:sticky;top:0;background:var(--ground);z-index:10}
+nav a{flex:0 0 auto;padding:12px 13px 10px;font-size:12px;color:var(--ink2);
+  text-decoration:none;border-bottom:2px solid transparent;white-space:nowrap;
+  display:flex;align-items:baseline;gap:6px}
+nav a:hover{color:var(--ink)}
+nav a[aria-current]{color:var(--ink);border-bottom-color:var(--shu);font-weight:700}
+nav a b{font-family:var(--mono);font-size:10.5px;font-weight:500;color:var(--ink3)}
+nav a[aria-current] b{color:var(--shu)}
+nav a:focus-visible{outline:2px solid var(--ink);outline-offset:-3px}
+
+/* 見出し */
+header{display:flex;flex-wrap:wrap;align-items:flex-end;gap:14px 22px;
+  padding-bottom:14px;border-bottom:2px solid var(--ink)}
+h1{font-family:var(--disp);font-weight:900;font-size:27px;letter-spacing:.06em;
+  margin:0;line-height:1.1}
+.sub{color:var(--ink2);font-size:12.5px;margin:3px 0 0}
+.hstat{margin-left:auto;display:flex;gap:20px;text-align:right}
+.hstat div span{display:block}
+.hstat .n{font-family:var(--mono);font-weight:600;font-size:22px;
+  font-variant-numeric:tabular-nums;line-height:1.15}
+.hstat .l{font-size:10.5px;letter-spacing:.13em;color:var(--ink3)}
+.hstat .mine .n{color:var(--shu)}
+
+h2{font-family:var(--disp);font-weight:700;font-size:14px;letter-spacing:.14em;
+  margin:36px 0 3px;display:flex;align-items:baseline;gap:10px}
+h2 em{font-style:normal;font-family:var(--body);font-weight:400;font-size:11.5px;
+  letter-spacing:0;color:var(--ink3)}
+
+/* 工程レール */
+.rail{display:flex;gap:0;overflow-x:auto;padding:14px 0 4px;margin-top:12px}
+.stage{flex:0 0 auto;min-width:96px;padding:10px 12px 11px;background:var(--surface);
+  border:1px solid var(--rule);border-right:none;position:relative;cursor:pointer;
+  text-align:left;font:inherit;color:inherit;transition:background .12s}
+.stage:last-child{border-right:1px solid var(--rule)}
+.stage:hover,.stage:focus-visible{background:var(--sunk);outline:none}
+.stage:focus-visible{box-shadow:inset 0 0 0 2px var(--ink)}
+.stage[aria-pressed="true"]{background:var(--ink);border-color:var(--ink)}
+.stage[aria-pressed="true"] .sn,.stage[aria-pressed="true"] .sc,
+.stage[aria-pressed="true"] .st{color:var(--ground)}
+.stage::before{content:"";position:absolute;inset:0 0 auto 0;height:3px}
+.stage.mine::before{background:var(--shu)}
+.stage.wait::before{background:var(--ochre)}
+.stage.done::before{background:var(--matcha)}
+.sn{font-size:11.5px;font-weight:500;display:block;white-space:nowrap}
+.sc{font-family:var(--mono);font-weight:600;font-size:23px;line-height:1.2;
+  font-variant-numeric:tabular-nums;display:block;margin-top:2px}
+.stage.mine .sc{color:var(--shu)} .stage.wait .sc{color:var(--ochre)}
+.stage.done .sc{color:var(--matcha)}
+.sc.zero{color:var(--ink3)!important;font-weight:400}
+.st{font-size:10px;color:var(--ink3);display:block;white-space:nowrap}
+
+/* 止まり */
+.stalls{display:grid;gap:1px;background:var(--rule);border:1px solid var(--rule);
+  margin-top:12px}
+.stall{background:var(--surface);padding:11px 14px;display:flex;flex-wrap:wrap;
+  gap:4px 12px;align-items:baseline;border-left:3px solid transparent}
+.stall.mine{border-left-color:var(--shu)}
+.stall.wait{border-left-color:var(--ochre)}
+.stall .who{font-family:var(--disp);font-weight:700;font-size:13px;min-width:104px}
+.stall .pj{font-size:11.5px;color:var(--ink2);min-width:88px}
+.stall .cnt{font-family:var(--mono);font-size:11.5px;color:var(--ink3)}
+.stall .ids{display:flex;flex-wrap:wrap;gap:4px;flex:1 1 240px}
+
+/* 番号チップ */
+.chip{font-family:var(--mono);font-size:11px;font-weight:500;padding:1px 6px;
+  border:1px solid var(--rule2);background:var(--ground);color:var(--ink2);
+  cursor:pointer;letter-spacing:.02em}
+.chip:hover,.chip:focus-visible{border-color:var(--ink);color:var(--ink);outline:none}
+
+/* 絞り込み */
+.filters{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:12px}
+.f{font-family:var(--body);font-size:11.5px;padding:4px 10px;border:1px solid var(--rule2);
+  background:var(--surface);color:var(--ink2);cursor:pointer;letter-spacing:.03em}
+.f[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--ground)}
+.f:focus-visible{outline:2px solid var(--ink);outline-offset:1px}
+#q{flex:1 1 180px;min-width:140px;font-family:var(--mono);font-size:12px;padding:4px 9px;
+  border:1px solid var(--rule2);background:var(--surface);color:var(--ink)}
+#q:focus{outline:none;border-color:var(--ink)}
+
+/* 登録簿 */
+table{width:100%;border-collapse:collapse;margin-top:10px;font-size:12.5px}
+thead th{text-align:left;font-family:var(--disp);font-weight:700;font-size:10.5px;
+  letter-spacing:.12em;color:var(--ink3);padding:0 10px 6px;border-bottom:1px solid var(--rule2);
+  white-space:nowrap}
+tbody tr{border-bottom:1px solid var(--rule);cursor:pointer}
+tbody tr:hover{background:var(--surface)}
+tbody td{padding:7px 10px;vertical-align:top}
+td.id{font-family:var(--mono);font-weight:600;font-size:12px;white-space:nowrap;
+  border-left:3px solid transparent;padding-left:9px}
+tr.mine td.id{border-left-color:var(--shu)}
+tr.wait td.id{border-left-color:var(--ochre)}
+tr.done td.id{border-left-color:var(--matcha)}
+td.stg{white-space:nowrap;font-size:11.5px}
+td.d{font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--ink3);
+  text-align:right;white-space:nowrap;font-size:11.5px}
+td.txt{color:var(--ink2);max-width:1px;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap}
+.pill{display:inline-block;font-size:10.5px;padding:0 6px;border:1px solid;
+  letter-spacing:.02em}
+.pill.mine{color:var(--shu);border-color:var(--shu-line);background:var(--shu-soft)}
+.pill.wait{color:var(--ochre);border-color:var(--ochre-line);background:var(--ochre-soft)}
+.pill.done{color:var(--matcha);border-color:var(--matcha-line);background:var(--matcha-soft)}
+.none{padding:24px 10px;color:var(--ink3);font-size:12.5px}
+
+/* 中身 */
+.sheet{position:fixed;inset:0 0 0 auto;width:min(560px,100%);background:var(--surface);
+  border-left:1px solid var(--rule2);overflow-y:auto;padding:22px 24px 60px;
+  transform:translateX(100%);transition:transform .2s ease;z-index:20;
+  box-shadow:-14px 0 40px rgba(0,0,0,.13)}
+.sheet.open{transform:none}
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.3);opacity:0;pointer-events:none;
+  transition:opacity .2s;z-index:19}
+.scrim.open{opacity:1;pointer-events:auto}
+.sheet h3{font-family:var(--mono);font-weight:600;font-size:21px;margin:0;letter-spacing:.02em}
+.sheet .pj2{font-size:11.5px;color:var(--ink3);margin:1px 0 14px}
+.close{position:absolute;top:16px;right:18px;background:none;border:1px solid var(--rule2);
+  color:var(--ink2);font-size:15px;line-height:1;padding:4px 8px;cursor:pointer;font-family:var(--mono)}
+.close:hover{border-color:var(--ink);color:var(--ink)}
+.turn{padding:9px 12px;border-left:3px solid;margin-bottom:16px;font-size:12.5px}
+.turn.mine{border-color:var(--shu);background:var(--shu-soft)}
+.turn.wait{border-color:var(--ochre);background:var(--ochre-soft)}
+.turn.done{border-color:var(--matcha);background:var(--matcha-soft)}
+.turn b{font-family:var(--disp);font-size:13.5px}
+.turn span{color:var(--ink2)}
+dl{margin:0;display:grid;grid-template-columns:78px 1fr;gap:1px 0;
+  background:var(--rule);border:1px solid var(--rule)}
+dt{background:var(--sunk);padding:7px 9px;font-size:10.5px;letter-spacing:.08em;
+  color:var(--ink3);font-family:var(--disp);font-weight:700}
+dd{background:var(--surface);margin:0;padding:7px 11px;font-size:12.5px;
+  white-space:pre-wrap;word-break:break-word;line-height:1.75}
+dd.mono{font-family:var(--mono);font-size:11.5px}
+dd a{color:var(--shu)}
+@media (max-width:700px){
+  .wrap{padding:20px 14px 80px}
+  h1{font-size:22px} .hstat{margin-left:0;width:100%;justify-content:flex-start}
+  .stall .who,.stall .pj{min-width:0}
+  th.hx,td.hx{display:none}
+  dl{grid-template-columns:66px 1fr}
+  .sheet{width:100%;border-left:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <nav id="nav"></nav>
+  <header>
+    <div>
+      <h1>CR工程板</h1>
+      <p class="sub" id="sub"></p>
+    </div>
+    <div class="hstat">
+      <div class="mine"><span class="n" id="nMine">–</span><span class="l">こちらの番</span></div>
+      <div><span class="n" id="nWait">–</span><span class="l">相手待ち</span></div>
+      <div><span class="n" id="nAll">–</span><span class="l">ぜんぶ</span></div>
+    </div>
+  </header>
+
+  <h2>工程 <em>クリックで絞り込む／上の線の色は誰の番か</em></h2>
+  <div class="rail" id="rail"></div>
+
+  <h2>いま動かすもの <em>同じ工程で3日以上。こちらの番のものを上に</em></h2>
+  <div class="stalls" id="stalls"></div>
+
+  <h2>登録簿 <em>行をクリックすると依頼の中身が出る</em></h2>
+  <div class="filters" id="pjs"></div>
+  <div class="filters">
+    <input id="q" placeholder="番号か言葉で探す（MB-48 / 白カビ / 耳鳴り）" autocomplete="off">
+    <button class="f" id="clear">絞り込みを消す</button>
+  </div>
+  <table>
+    <thead><tr>
+      <th>CR</th><th>工程</th><th class="hx" id="th3">次は誰の番か</th>
+      <th class="hx">入れる訴求</th><th>日数</th>
+    </tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+  <div class="none" id="none" hidden>当てはまるCRがない。</div>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="sheet" id="sheet" aria-hidden="true">
+  <button class="close" id="close" aria-label="閉じる">✕</button>
+  <h3 id="sId"></h3>
+  <p class="pj2" id="sPj"></p>
+  <div class="turn" id="sTurn"></div>
+  <dl id="sDl"></dl>
+</aside>
+
+<script type="application/json" id="data">{"作成": "2026-09-14 10:40", "工程": [{"名": "依頼済", "担当": "外注が作っている"}, {"名": "納品ずみ", "担当": "こちらが検収する"}, {"名": "直し中", "担当": "外注が直している"}, {"名": "クライアント待ち", "担当": "クライアントが見ている"}, {"名": "クライアント直し", "担当": "外注が直している"}, {"名": "入稿待ち", "担当": "こちらが入稿する"}, {"名": "審査中", "担当": "媒体が見ている"}, {"名": "審査おちた", "担当": "こちらが作り直す"}, {"名": "配信待ち", "担当": "こちらが配信に載せる"}, {"名": "配信中", "担当": "数字を見る"}], "略号": {"メディカルブレス": "MB", "デイリーワン": "DL", "セアップ": "SU", "見える力記憶力": "MK", "百聞之才錠": "HB", "百明青汁": "AJ", "BelleFC": "BF"}, "写し": {"メディカルブレス": "09-14 09:55", "デイリーワン": "09-14 09:55", "セアップ": "09-14 09:56", "見える力記憶力": "09-14 09:57", "百聞之才錠": "09-14 09:58", "百明青汁": "09-14 09:59", "BelleFC": "09-14 09:53"}, "CR": [{"id": "AJ-1", "商材": "百明青汁", "略": "AJ", "番号": "1", "工程": "依頼済", "担当": "外注が作っている", "日数": 5, "依頼日": "2026-09-09", "比率": "横長(1200×628)／300KB未満", "訴求": "【上のテロップ3行】階段の上り下りがつらい方、実は…\nひざが悪くなる原因は年齢ではありません\n軟骨を削り取る「炎症細胞」でした\n【下】東京大学によると", "絵": "【上】ひざ関節の断面イラスト（軟骨がすり減り骨と骨が近づく）\n【下】白衣の整形外科医（60代）が正面を向いて話している。商材は写さない", "注釈": "※画像はイメージです。個人の感想であり、効果・効能を保証するものではありません。", "横転元": "01_1555351789.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "", "クライアント": "", "入稿日": ""}, {"id": "AJ-2", "商材": "百明青汁", "略": "AJ", "番号": "2", "工程": "依頼済", "担当": "外注が作っている", "日数": 5, "依頼日": "2026-09-09", "比率": "正方形(1200×1200)／300KB未満", "訴求": "【上・特大2行】ノーベル賞の成分が\nひざに\n【下の帯】日本初のひざ改善青汁／苦くないので毎日続きます", "絵": "【中央】明るい茶色の地で、百明青汁を溶いたグラスを両手で持つ70代女性の手元。素材フォルダの実物写真どおりに（形・色・ロゴを変えない）", "注釈": "※画像はイメージです。個人の感想であり、効果・効能を保証するものではありません。", "横転元": "02_1557149991.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "", "クライアント": "", "入稿日": ""}, {"id": "AJ-3", "商材": "百明青汁", "略": "AJ", "番号": "3", "工程": "依頼済", "担当": "外注が作っている", "日数": 5, "依頼日": "2026-09-09", "比率": "横長(1200×628)／300KB未満", "訴求": "【左の縦・特大】1世帯\n1回限り\n【右の小文字】継続回数のお約束なし／全額返金保証／後払いでクレカ不要", "絵": "【右】黒い地に、百明青汁のパッケージを片手で正面から持つ70代女性の手元。素材フォルダの実物写真どおりに（形・色・ロゴを変えない）", "注釈": "※画像はイメージです。個人の感想であり、効果・効能を保証するものではありません。", "横転元": "03_1557190268.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "", "クライアント": "", "入稿日": ""}, {"id": "AJ-4", "商材": "百明青汁", "略": "AJ", "番号": "4", "工程": "依頼済", "担当": "外注が作っている", "日数": 5, "依頼日": "2026-09-09", "比率": "正方形(1200×1200)／300KB未満", "訴求": "【上の帯・特大】ひざ関節専門の医師も絶賛\n【中央の小文字】ひざ軟骨を40年研究した日本一の製薬会社が開発\n【下・特大】「ひざ悩み＝年齢」はもう古い常識\n【下の小さい行】階段の上り下りがつらい方へ", "絵": "【中央】木漏れ日の地で、百明青汁の個包装を1本つまんで見せる70代女性の手元。素材フォルダの実物写真どおりに（形・色・ロゴを変えない）", "注釈": "※画像はイメージです。個人の感想であり、効果・効能を保証するものではありません。", "横転元": "04_1558037268.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "", "クライアント": "", "入稿日": ""}, {"id": "AJ-5", "商材": "百明青汁", "略": "AJ", "番号": "5", "工程": "依頼済", "担当": "外注が作っている", "日数": 5, "依頼日": "2026-09-09", "比率": "横長(1200×628)／300KB未満", "訴求": "【文字なし】（絵の補足: 青汁の原料の葉が画面いっぱい。訴求は見出しで言う）", "絵": "【全面】採れたての濃い緑の葉野菜（ケール・大麦若葉）が画面いっぱいの寄り。商材は写さない", "注釈": "※画像はイメージです。個人の感想であり、効果・効能を保証するものではありません。", "横転元": "05_1558198828.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "", "クライアント": "", "入稿日": ""}, {"id": "AJ-6", "商材": "百明青汁", "略": "AJ", "番号": "6", "工程": "依頼済", "担当": "外注が作っている", "日数": 5, "依頼日": "2026-09-09", "比率": "正方形(1200×1200)／300KB未満", "訴求": "【左上のリボン】75%OFF\n【上・特大】今だけ 1,980円（税込）\n【上の小さい行】定価7,992円\n【下の小文字】毎日先着150名様に500円OFFクーポン／在庫がなくなり次第終了", "絵": "【中央】水色の地に、百明青汁の個包装を5本、扇状に広げた物撮り。人物なし。素材フォルダの実物写真どおりに（形・色・ロゴを変えない）", "注釈": "※画像はイメージです。個人の感想であり、効果・効能を保証するものではありません。", "横転元": "06_1558466880.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "", "クライアント": "", "入稿日": ""}, {"id": "AJ-7", "商材": "百明青汁", "略": "AJ", "番号": "7", "工程": "依頼済", "担当": "外注が作っている", "日数": 5, "依頼日": "2026-09-09", "比率": "正方形(1200×1200)／300KB未満", "訴求": "【上の緑帯・特大】グルコサミンの26倍\n【中央の小さい行】普通のサプリとは別物です／NHKでも放送された成分\n【下の帯】ハーバード大学でも研究されている成分", "絵": "【中央】緑の地に、百明青汁の箱と水で溶いたグラスを並べる。人物なし。素材フォルダの実物写真どおりに（形・色・ロゴを変えない）", "注釈": "※画像はイメージです。個人の感想であり、効果・効能を保証するものではありません。", "横転元": "07_1558494272.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "", "クライアント": "", "入稿日": ""}, {"id": "AJ-8", "商材": "百明青汁", "略": "AJ", "番号": "8", "工程": "依頼済", "担当": "外注が作っている", "日数": 5, "依頼日": "2026-09-09", "比率": "横長(1200×628)／300KB未満", "訴求": "【中央・特大】ひざ改善青汁\n【右の丸】70代に人気\n【下・特大】信頼できるから薬局でも販売中\n【下の小さい行】Yahoo!ニュースでも話題／一世帯一回限り", "絵": "【中央】桜の淡いピンクの地に、百明青汁の箱を5つ横一列に並べた物撮り。人物なし。素材フォルダの実物写真どおりに（形・色・ロゴを変えない）", "注釈": "※画像はイメージです。個人の感想であり、効果・効能を保証するものではありません。", "横転元": "08_1556646558.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "", "クライアント": "", "入稿日": ""}, {"id": "AJ-9", "商材": "百明青汁", "略": "AJ", "番号": "9", "工程": "依頼済", "担当": "外注が作っている", "日数": 5, "依頼日": "2026-09-09", "比率": "横長(1200×628)／300KB未満", "訴求": "【左の縦・特大】ひざには\nこれ一択\n【右の縦・特大】ひざ関節専門の\n医師も絶賛\n【下の小さい行】個包装だから持ち歩けます／水にサッと溶けて苦くない", "絵": "【中央】白地に、百明青汁の個包装を1本、指でつまんで見せる70代女性の手元。左右を黒い縦帯で挟む。素材フォルダの実物写真どおりに（形・色・ロゴを変えない）", "注釈": "※画像はイメージです。個人の感想であり、効果・効能を保証するものではありません。", "横転元": "09_1557074158.png", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "", "クライアント": "", "入稿日": ""}, {"id": "AJ-10", "商材": "百明青汁", "略": "AJ", "番号": "10", "工程": "依頼済", "担当": "外注が作っている", "日数": 5, "依頼日": "2026-09-09", "比率": "横長(1200×628)／300KB未満", "訴求": "【中央・縦書き特大】お詫び\n【左の文章4行】「ひざ改善青汁」が想定を超えて売れ、お届けが遅れております。\nお詫びに、80歳のマサイ族のひざが日本人の30歳より丈夫だった理由をまとめた資料をお付けします。\n【右下】在庫がなくなり次第終了", "絵": "【右下】白地に、百明青汁の箱を2つ並べる。左に文章を置く余白。人物なし。素材フォルダの実物写真どおりに（形・色・ロゴを変えない）", "注釈": "※画像はイメージです。個人の感想であり、効果・効能を保証するものではありません。", "横転元": "10_21935649.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "", "クライアント": "", "入稿日": ""}, {"id": "AJ-11", "商材": "百明青汁", "略": "AJ", "番号": "11", "工程": "依頼済", "担当": "外注が作っている", "日数": 5, "依頼日": "2026-09-09", "比率": "横長(1200×628)／300KB未満", "訴求": "【上の帯】車椅子だった88歳の父にも試したら\n【中央・特大】個包装だから\n持ち歩ける\n【下の小文字】信頼できるから薬局でも販売中／旅行先でも飲めます", "絵": "【中央】紺色の地に花火。百明青汁の個包装を横一列に並べ、右端の1本を70代女性が手に取る。素材フォルダの実物写真どおりに（形・色・ロゴを変えない）", "注釈": "※画像はイメージです。個人の感想であり、効果・効能を保証するものではありません。", "横転元": "11_1558980710.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "", "クライアント": "", "入稿日": ""}, {"id": "AJ-12", "商材": "百明青汁", "略": "AJ", "番号": "12", "工程": "依頼済", "担当": "外注が作っている", "日数": 5, "依頼日": "2026-09-09", "比率": "横長(1200×628)／300KB未満", "訴求": "【左上の赤丸】新発売\n【右・特大】定価7,992円 → 1,980円\n【右下の小さい行】放置すると骨と骨が直接ぶつかり、自分の足で歩けなくなります", "絵": "【左】白地で、百明青汁の箱を1つ胸の高さに持つ70代女性。右に大きな余白（価格の落差を置く）。素材フォルダの実物写真どおりに（形・色・ロゴを変えない）", "注釈": "※画像はイメージです。個人の感想であり、効果・効能を保証するものではありません。", "横転元": "12_1557373323.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "", "クライアント": "", "入稿日": ""}, {"id": "AJ-13", "商材": "百明青汁", "略": "AJ", "番号": "13", "工程": "依頼済", "担当": "外注が作っている", "日数": 5, "依頼日": "2026-09-09", "比率": "正方形(1200×1200)／300KB未満", "訴求": "【上の金の帯】これ全部、初回で届きます\n【中央・特大】本日 75%OFF\n【下・特大2段】定価7,992円（税込）→ 1,980円（税込）\n【下の細い1行】毎日先着150名様に500円OFFクーポン／全額返金保証", "絵": "【中央】赤い緞帳のような地に、百明青汁の箱と個包装をまとめて並べた物撮り。人物なし。素材フォルダの実物写真どおりに（形・色・ロゴを変えない）", "注釈": "※画像はイメージです。個人の感想であり、効果・効能を保証するものではありません。", "横転元": "13_1558342976.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "", "クライアント": "", "入稿日": ""}, {"id": "AJ-14", "商材": "百明青汁", "略": "AJ", "番号": "14", "工程": "依頼済", "担当": "外注が作っている", "日数": 5, "依頼日": "2026-09-09", "比率": "正方形(1200×1200)／300KB未満", "訴求": "【上・特大2行】解約の電話は\n要りません\n【中央の枠】一世帯一回限りのお試し\n【下の帯】送料無料でお届けします\n【下の注記】継続回数のお約束なし／全額返金保証／後払いでクレジットカード不要", "絵": "【中央】白い地に、百明青汁の箱を立て、その手前に個包装を3本並べる。右下に箱を支える70代女性の手。素材フォルダの実物写真どおりに（形・色・ロゴを変えない）", "注釈": "※画像はイメージです。個人の感想であり、効果・効能を保証するものではありません。", "横転元": "14_1558626348.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "", "クライアント": "", "入稿日": ""}, {"id": "AJ-15", "商材": "百明青汁", "略": "AJ", "番号": "15", "工程": "依頼済", "担当": "外注が作っている", "日数": 5, "依頼日": "2026-09-09", "比率": "横長(1200×628)／300KB未満", "訴求": "【右・白の特大2行】日本初の\nひざ改善青汁\n【左の小さい行】ひざ軟骨を40年研究した製薬会社が開発\n【下の1行】水にサッと溶けて苦くない／個包装だから持ち歩けます", "絵": "【中央】金色の光がにじむ地に、百明青汁の箱を1つ立て、右手で支える70代女性の手。素材フォルダの実物写真どおりに（形・色・ロゴを変えない）", "注釈": "※画像はイメージです。個人の感想であり、効果・効能を保証するものではありません。", "横転元": "15_113382546.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "", "クライアント": "", "入稿日": ""}, {"id": "AJ-16", "商材": "百明青汁", "略": "AJ", "番号": "16", "工程": "依頼済", "担当": "外注が作っている", "日数": 5, "依頼日": "2026-09-09", "比率": "横長(1200×628)／300KB未満", "訴求": "【右・特大】1度だけ購入可\n【左の小さい行】一世帯一回限り／継続回数のお約束なし\n【下の帯】定価7,992円 → 1,980円（税込）・送料無料", "絵": "【左】水色のグラデーションの地に、百明青汁の箱を1つ、両手で持つ70代男性。素材フォルダの実物写真どおりに（形・色・ロゴを変えない）", "注釈": "※画像はイメージです。個人の感想であり、効果・効能を保証するものではありません。", "横転元": "16_113410315.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "", "クライアント": "", "入稿日": ""}, {"id": "AJ-17", "商材": "百明青汁", "略": "AJ", "番号": "17", "工程": "依頼済", "担当": "外注が作っている", "日数": 5, "依頼日": "2026-09-09", "比率": "横長(1200×628)／300KB未満", "訴求": "【文字なし】（絵の補足: 玄関で段ボールを受け取った瞬間。訴求は見出しで「一世帯一回限り」を言う）", "絵": "【中央】玄関で、届いた段ボール箱を両手で抱えた70代女性を斜め上から。商材は写さない", "注釈": "※画像はイメージです。個人の感想であり、効果・効能を保証するものではありません。", "横転元": "17_113538527.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "", "クライアント": "", "入稿日": ""}, {"id": "AJ-18", "商材": "百明青汁", "略": "AJ", "番号": "18", "工程": "依頼済", "担当": "外注が作っている", "日数": 4, "依頼日": "2026-09-10", "比率": "正方形(1200×1200)／300KB未満", "訴求": "【上の茶色帯・特大】階段の上り下りがつらい方へ\n【中央・特大】ひざが悪くなる原因は「炎症細胞」でした\n【下の小さい行】軟骨を削り取る炎症細胞／水でサッと溶けて苦くない", "絵": "【中央】赤い放射の地に、百明青汁のパッケージと、水で溶いたグラス、手前に粉を少し。人物なし。素材フォルダの実物写真どおりに（形・色・ロゴを変えない）", "注釈": "※画像はイメージです。個人の感想であり、効果・効能を保証するものではありません。", "横転元": "18_1557942891.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "", "クライアント": "", "入稿日": ""}, {"id": "AJ-19", "商材": "百明青汁", "略": "AJ", "番号": "19", "工程": "依頼済", "担当": "外注が作っている", "日数": 0, "依頼日": "2026-09-14", "比率": "横長(1200×628)／300KB未満", "訴求": "【左の赤ベタ・白の縦組み特大】原因は炎症細胞\n【右の赤ベタ・白の縦組み特大】年齢ではない", "絵": "【中央】白地に、紙箱を片手で正面に持って見せる70代の日本人女性の手元。商材は人の手に。素材フォルダの実物写真どおりに（形・色・ロゴを変えない。横長の紙箱／中央が濃い緑の帯で左右がベージュの和紙調／中央に金の円と金のロゴ／金で「HYAKUMEI」「百明青汁」／赤い角印。スティックは濃い緑に金のロゴ）", "注釈": "※画像はイメージです。個人の感想であり、効果・効能を保証するものではありません。", "横転元": "19_1556103375.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/百明青汁_横転元_2026-09-14/19_1556103375.jpg", "クライアント": "", "入稿日": ""}, {"id": "AJ-20", "商材": "百明青汁", "略": "AJ", "番号": "20", "工程": "依頼済", "担当": "外注が作っている", "日数": 0, "依頼日": "2026-09-14", "比率": "横長(1200×628)／300KB未満", "訴求": "【右上・白の特大2行】正座ができなく\nなった60代へ\n【右下・白地に緑の特大】1,980円\n【右下の小さい行】水でサッと溶けて苦くない", "絵": "【左】濃い緑の地に、スティックを1本、片手で持って見せる60代の日本人男性の手元。商材は人の手に。素材フォルダの実物写真どおりに（形・色・ロゴを変えない。横長の紙箱／中央が濃い緑の帯で左右がベージュの和紙調／中央に金の円と金のロゴ／金で「HYAKUMEI」「百明青汁」／赤い角印。スティックは濃い緑に金のロゴ）", "注釈": "※画像はイメージです。個人の感想であり、効果・効能を保証するものではありません。", "横転元": "20_22236383.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/百明青汁_横転元_2026-09-14/20_22236383.jpg", "クライアント": "", "入稿日": ""}, {"id": "AJ-21", "商材": "百明青汁", "略": "AJ", "番号": "21", "工程": "依頼済", "担当": "外注が作っている", "日数": 0, "依頼日": "2026-09-14", "比率": "横長(1200×628)／300KB未満", "訴求": "【右の見出し1行】東京大学によると、ひざがつらい原因は年齢ではなく炎症細胞\n【右・極太の特大】軟骨を削るのは\n炎症細胞\n【下の小さい行】1日1杯、水でサッと", "絵": "【左】白地に、スティックを開けて緑の粉をグラスに注いでいる70代の日本人女性の手元。商材は人の手に。素材フォルダの実物写真どおりに（形・色・ロゴを変えない。横長の紙箱／中央が濃い緑の帯で左右がベージュの和紙調／中央に金の円と金のロゴ／金で「HYAKUMEI」「百明青汁」／赤い角印。スティックは濃い緑に金のロゴ）", "注釈": "※画像はイメージです。個人の感想であり、効果・効能を保証するものではありません。サケ鼻軟骨由来プロテオグリカンが膝の動きの改善に役立つ", "横転元": "21_1558262734.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/百明青汁_横転元_2026-09-14/21_1558262734.jpg", "クライアント": "", "入稿日": ""}, {"id": "AJ-22", "商材": "百明青汁", "略": "AJ", "番号": "22", "工程": "依頼済", "担当": "外注が作っている", "日数": 0, "依頼日": "2026-09-14", "比率": "横長(1200×628)／300KB未満", "訴求": "【上の赤帯・黒タグ】受賞\n【上の赤帯・白文字】2025年にノーベル賞を受賞した成分を配合\n【右の赤ベタ・黄色い縦組み特大】これ一択\n【右下の小さい行】ひざの不調にはこれ一択", "絵": "【左】赤い地に、紙箱を両腕で抱えて見せる70代の日本人女性の手元。商材は人の手に。素材フォルダの実物写真どおりに（形・色・ロゴを変えない。横長の紙箱／中央が濃い緑の帯で左右がベージュの和紙調／中央に金の円と金のロゴ／金で「HYAKUMEI」「百明青汁」／赤い角印。スティックは濃い緑に金のロゴ）", "注釈": "※画像はイメージです。個人の感想であり、効果・効能を保証するものではありません。2025年ノーベル賞で受賞のTreg細胞のこと／使用者の感想。2026年9月時点・自社調べ", "横転元": "22_1557863495.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/百明青汁_横転元_2026-09-14/22_1557863495.jpg", "クライアント": "", "入稿日": ""}, {"id": "AJ-23", "商材": "百明青汁", "略": "AJ", "番号": "23", "工程": "依頼済", "担当": "外注が作っている", "日数": 0, "依頼日": "2026-09-14", "比率": "正方形(1200×1200)／300KB未満", "訴求": "【上の小さい囲み】ストレッチもサプリも効かなかった方へ\n【左・特大】まだ諦めないで\n【左下の小さい行】原因は炎症細胞／はじめての1箱 1,980円", "絵": "【上】明るいベージュの地に、紙箱を1つ立て、手前にスティックを1本置く。【下】白地にテキスト。**上に画像・下にテキストの上下2分割**（決めごと580）。人物なし。素材フォルダの実物写真どおりに（形・色・ロゴを変えない。横長の紙箱／中央が濃い緑の帯で左右がベージュの和紙調／中央に金の円と金のロゴ／金で「HYAKUMEI」「百明青汁」／赤い角印。スティックは濃い緑に金のロゴ）", "注釈": "※画像はイメージです。個人の感想であり、効果・効能を保証するものではありません。", "横転元": "23_22205094.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/百明青汁_横転元_2026-09-14/23_22205094.jpg", "クライアント": "", "入稿日": ""}, {"id": "AJ-24", "商材": "百明青汁", "略": "AJ", "番号": "24", "工程": "依頼済", "担当": "外注が作っている", "日数": 0, "依頼日": "2026-09-14", "比率": "正方形(1200×1200)／300KB未満", "訴求": "【下の緑の帯】ハーバード大学でも研究されている成分\n【下の赤い特大】7,992円 ▶ 1,980円\n【下の小さい行】1日1杯、水でサッと溶けて苦くない", "絵": "【上】白い地に、紙箱とスティックを3本並べた物撮り。**上に画像・下にテキストの上下2分割**（決めごと580）。人物なし。素材フォルダの実物写真どおりに（形・色・ロゴを変えない。横長の紙箱／中央が濃い緑の帯で左右がベージュの和紙調／中央に金の円と金のロゴ／金で「HYAKUMEI」「百明青汁」／赤い角印。スティックは濃い緑に金のロゴ）", "注釈": "※画像はイメージです。個人の感想であり、効果・効能を保証するものではありません。Mano et al., 2017 膝関節機能スコア（JOA、JKOM）および疼痛評価（VAS）においてプラセボ群と比較して有意な改善が報告", "横転元": "24_1559153697.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/百明青汁_横転元_2026-09-14/24_1559153697.jpg", "クライアント": "", "入稿日": ""}, {"id": "AJ-25", "商材": "百明青汁", "略": "AJ", "番号": "25", "工程": "依頼済", "担当": "外注が作っている", "日数": 0, "依頼日": "2026-09-14", "比率": "横長(1200×628)／300KB未満", "訴求": "【上の見出し1行】「車椅子だった88歳の父にも試しました」\n【赤いリボン章】ノーベル賞を受賞した成分\n【リボンの下】贈って1,980円", "絵": "【左】濃い赤の地に、紙箱を包装紙から出して手渡している70代の日本人女性と80代の男性の手元。商材は人の手に。素材フォルダの実物写真どおりに（形・色・ロゴを変えない。横長の紙箱／中央が濃い緑の帯で左右がベージュの和紙調／中央に金の円と金のロゴ／金で「HYAKUMEI」「百明青汁」／赤い角印。スティックは濃い緑に金のロゴ）", "注釈": "※画像はイメージです。個人の感想であり、効果・効能を保証するものではありません。2025年ノーベル賞で受賞のTreg細胞のこと", "横転元": "25_1559379472.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/百明青汁_横転元_2026-09-14/25_1559379472.jpg", "クライアント": "", "入稿日": ""}, {"id": "AJ-26", "商材": "百明青汁", "略": "AJ", "番号": "26", "工程": "依頼済", "担当": "外注が作っている", "日数": 0, "依頼日": "2026-09-14", "比率": "横長(1200×628)／300KB未満", "訴求": "【左・黒文字4行】「昔好きだった\n散歩を、思い切り\nできるように\nなりました」（76歳女性）", "絵": "【右】朝の並木道を、杖を持たずに歩いている76歳くらいの日本人女性。手前に紙箱を1つ置く。商材は写す。素材フォルダの実物写真どおりに（形・色・ロゴを変えない。横長の紙箱／中央が濃い緑の帯で左右がベージュの和紙調／中央に金の円と金のロゴ／金で「HYAKUMEI」「百明青汁」／赤い角印。スティックは濃い緑に金のロゴ）", "注釈": "※画像はイメージです。個人の感想であり、効果・効能を保証するものではありません。", "横転元": "26_1557922211.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/百明青汁_横転元_2026-09-14/26_1557922211.jpg", "クライアント": "", "入稿日": ""}, {"id": "AJ-27", "商材": "百明青汁", "略": "AJ", "番号": "27", "工程": "依頼済", "担当": "外注が作っている", "日数": 0, "依頼日": "2026-09-14", "比率": "正方形(1200×1200)／300KB未満", "訴求": "【上・白文字2行】旅行にも行けるように\nなりました\n【下・白文字1行】75歳女性の声／旅行を諦めた方へ、1日1杯", "絵": "【中央】濃い茶色の地に、旅行カバンの持ち手を握る70代の日本人女性の手元と、その隣に紙箱を1つ置く。商材は写す。素材フォルダの実物写真どおりに（形・色・ロゴを変えない。横長の紙箱／中央が濃い緑の帯で左右がベージュの和紙調／中央に金の円と金のロゴ／金で「HYAKUMEI」「百明青汁」／赤い角印。スティックは濃い緑に金のロゴ）", "注釈": "※画像はイメージです。個人の感想であり、効果・効能を保証するものではありません。", "横転元": "27_22116078.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/百明青汁_横転元_2026-09-14/27_22116078.jpg", "クライアント": "", "入稿日": ""}, {"id": "AJ-28", "商材": "百明青汁", "略": "AJ", "番号": "28", "工程": "依頼済", "担当": "外注が作っている", "日数": 0, "依頼日": "2026-09-14", "比率": "横長(1200×628)／300KB未満", "訴求": "【右・特大2行】ひざの原因は、\n年齢じゃない。", "絵": "【左】白地に、紙箱を片手で正面に持つ70代の日本人男性の手元。商材は人の手に。素材フォルダの実物写真どおりに（形・色・ロゴを変えない。横長の紙箱／中央が濃い緑の帯で左右がベージュの和紙調／中央に金の円と金のロゴ／金で「HYAKUMEI」「百明青汁」／赤い角印。スティックは濃い緑に金のロゴ）", "注釈": "※画像はイメージです。個人の感想であり、効果・効能を保証するものではありません。", "横転元": "28_21621825.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/百明青汁_横転元_2026-09-14/28_21621825.jpg", "クライアント": "", "入稿日": ""}, {"id": "AJ-29", "商材": "百明青汁", "略": "AJ", "番号": "29", "工程": "依頼済", "担当": "外注が作っている", "日数": 0, "依頼日": "2026-09-14", "比率": "横長(1200×628)／300KB未満", "訴求": "【左の赤ベタ・白の縦組み特大】立ち上がるとき\n「よいしょ」が出る方へ\n【左の小さい縦書き】原因は炎症細胞です", "絵": "【右】黒い地に、ソファから立ち上がろうとしてひざに手を当てている70代の日本人男性。手前に紙箱を1つ置く。商材は写す。素材フォルダの実物写真どおりに（形・色・ロゴを変えない。横長の紙箱／中央が濃い緑の帯で左右がベージュの和紙調／中央に金の円と金のロゴ／金で「HYAKUMEI」「百明青汁」／赤い角印。スティックは濃い緑に金のロゴ）", "注釈": "※画像はイメージです。個人の感想であり、効果・効能を保証するものではありません。", "横転元": "29_1557190263.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/百明青汁_横転元_2026-09-14/29_1557190263.jpg", "クライアント": "", "入稿日": ""}, {"id": "AJ-30", "商材": "百明青汁", "略": "AJ", "番号": "30", "工程": "依頼済", "担当": "外注が作っている", "日数": 0, "依頼日": "2026-09-14", "比率": "正方形(1200×1200)／300KB未満", "訴求": "【上の小さい行】「80歳のマサイ族のひざは丈夫だった」\n【上・白の特大】ひざは年齢じゃない。\n【左の丸バッジ】東京大学によると\n【左右の縦組みラベル2つ】ノーベル賞を受賞した成分／水でサッと溶けて苦くない\n【下の白い帯】7,992円 ▶ はじめての1箱 1,980円", "絵": "【中央】青い地に、スティックを1本、親から子へ手渡している70代と40代の日本人の手元。商材は人の手に。素材フォルダの実物写真どおりに（形・色・ロゴを変えない。横長の紙箱／中央が濃い緑の帯で左右がベージュの和紙調／中央に金の円と金のロゴ／金で「HYAKUMEI」「百明青汁」／赤い角印。スティックは濃い緑に金のロゴ）", "注釈": "※画像はイメージです。個人の感想であり、効果・効能を保証するものではありません。2025年ノーベル賞で受賞のTreg細胞のこと", "横転元": "30_1558466893.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/百明青汁_横転元_2026-09-14/30_1558466893.jpg", "クライアント": "", "入稿日": ""}, {"id": "AJ-31", "商材": "百明青汁", "略": "AJ", "番号": "31", "工程": "依頼済", "担当": "外注が作っている", "日数": 0, "依頼日": "2026-09-14", "比率": "横長(1200×628)／300KB未満", "訴求": "【右・縦組みの赤い特大】これ\n一択", "絵": "【左】白地に、スティックを1本、片手で立てて持つ70代の日本人女性の手元。商材は人の手に。素材フォルダの実物写真どおりに（形・色・ロゴを変えない。横長の紙箱／中央が濃い緑の帯で左右がベージュの和紙調／中央に金の円と金のロゴ／金で「HYAKUMEI」「百明青汁」／赤い角印。スティックは濃い緑に金のロゴ）", "注釈": "※画像はイメージです。個人の感想であり、効果・効能を保証するものではありません。使用者の感想。2026年9月時点・自社調べ", "横転元": "31_22322013.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/百明青汁_横転元_2026-09-14/31_22322013.jpg", "クライアント": "", "入稿日": ""}, {"id": "AJ-32", "商材": "百明青汁", "略": "AJ", "番号": "32", "工程": "依頼済", "担当": "外注が作っている", "日数": 0, "依頼日": "2026-09-14", "比率": "横長(1200×628)／300KB未満", "訴求": "【左上・白の見出し2行】薬局では\n買えません\n【右・極太の縦組み特大2語】炎症\n細胞\n【下の小さい行】ひざを諦めた60代・70代へ／1,980円", "絵": "【全面】濃い紺の地に、紙箱を1つ斜めに置いた物撮り。右は極太の縦組みを置く余白として大きく空ける。人物なし。素材フォルダの実物写真どおりに（形・色・ロゴを変えない。横長の紙箱／中央が濃い緑の帯で左右がベージュの和紙調／中央に金の円と金のロゴ／金で「HYAKUMEI」「百明青汁」／赤い角印。スティックは濃い緑に金のロゴ）", "注釈": "※画像はイメージです。個人の感想であり、効果・効能を保証するものではありません。", "横転元": "32_1552849549.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/百明青汁_横転元_2026-09-14/32_1552849549.jpg", "クライアント": "", "入稿日": ""}, {"id": "AJ-33", "商材": "百明青汁", "略": "AJ", "番号": "33", "工程": "依頼済", "担当": "外注が作っている", "日数": 0, "依頼日": "2026-09-14", "比率": "横長(1200×628)／300KB未満", "訴求": "【中央・縦組みの特大】階段を、\n下りで止まらない\n【左の丸いバッジ2つ】東京大学によると／ハーバード大学でも研究\n【縦の帯】千九百八十円\n【右端の縦帯】手すりを掴む回数が増えた70代へ", "絵": "【左】深い緑の地に、紙箱を片手で立てて持つ70代の日本人男性の手元。商材は人の手に。素材フォルダの実物写真どおりに（形・色・ロゴを変えない。横長の紙箱／中央が濃い緑の帯で左右がベージュの和紙調／中央に金の円と金のロゴ／金で「HYAKUMEI」「百明青汁」／赤い角印。スティックは濃い緑に金のロゴ）", "注釈": "※画像はイメージです。個人の感想であり、効果・効能を保証するものではありません。Mano et al., 2017 膝関節機能スコア（JOA、JKOM）および疼痛評価（VAS）においてプラセボ群と比較して有意な改善が報告", "横転元": "33_22328302.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/百明青汁_横転元_2026-09-14/33_22328302.jpg", "クライアント": "", "入稿日": ""}, {"id": "AJ-34", "商材": "百明青汁", "略": "AJ", "番号": "34", "工程": "依頼済", "担当": "外注が作っている", "日数": 0, "依頼日": "2026-09-14", "比率": "正方形(1200×1200)／300KB未満", "訴求": "【上の黄色い地・見出し3行】年のせいだと\n諦めていませんか\nひざを削るのは炎症細胞でした\n【上の見出しの赤いハイライト】炎症細胞\n【下の緑の帯】7,992円が はじめての1箱 1,980円", "絵": "【上】明るい診察室で、紙箱を片手で示している医師の手元。【下】黄色い地に見出し。**上に画像・下にテキストの上下2分割**（決めごと580）。商材は人の手に。素材フォルダの実物写真どおりに（形・色・ロゴを変えない。横長の紙箱／中央が濃い緑の帯で左右がベージュの和紙調／中央に金の円と金のロゴ／金で「HYAKUMEI」「百明青汁」／赤い角印。スティックは濃い緑に金のロゴ）", "注釈": "※画像はイメージです。個人の感想であり、効果・効能を保証するものではありません。", "横転元": "34_1558371788.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/百明青汁_横転元_2026-09-14/34_1558371788.jpg", "クライアント": "", "入稿日": ""}, {"id": "AJ-35", "商材": "百明青汁", "略": "AJ", "番号": "35", "工程": "依頼済", "担当": "外注が作っている", "日数": 0, "依頼日": "2026-09-14", "比率": "正方形(1200×1200)／300KB未満", "訴求": "【上・黒文字1行】「また旅行に行けるようになりました」（85歳女性）\n【下の金の立体文字2行】＼1日1杯／\n水でサッと溶ける\n【最下段・金の立体文字】千九百八十円", "絵": "【上】朝の食卓に、紙箱とスティックを3本、水で溶いたグラスを1つ並べた物撮り。奥に新聞と湯呑みを置いて生活感を出す。**上に画像・下にテキストの上下2分割**（決めごと580）。人物なし。※**下段の文字は金の箔押しの立体文字にする**（本人の直し・デイリーワン53の型）。素材フォルダの実物写真どおりに（形・色・ロゴを変えない。横長の紙箱／中央が濃い緑の帯で左右がベージュの和紙調／中央に金の円と金のロゴ／金で「HYAKUMEI」「百明青汁」／赤い角印。スティックは濃い緑に金のロゴ）", "注釈": "※画像はイメージです。個人の感想であり、効果・効能を保証するものではありません。", "横転元": "35_2986883731744.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/百明青汁_横転元_2026-09-14/35_2986883731744.jpg", "クライアント": "", "入稿日": ""}, {"id": "AJ-36", "商材": "百明青汁", "略": "AJ", "番号": "36", "工程": "依頼済", "担当": "外注が作っている", "日数": 0, "依頼日": "2026-09-14", "比率": "正方形(1200×1200)／300KB未満", "訴求": "【左・黄色の縦組み特大】ひざの原因は年齢じゃない\n【右・白の縦組み2行】削っていたのは\n炎症細胞でした\n【下の小さい行】東京大学によると／1日1杯", "絵": "【全面】濃い緑の地に、スティックを1本右下に小さく持つ70代の日本人女性の手元。縦組みを2列置く余白を大きく取る。商材は人の手に。素材フォルダの実物写真どおりに（形・色・ロゴを変えない。横長の紙箱／中央が濃い緑の帯で左右がベージュの和紙調／中央に金の円と金のロゴ／金で「HYAKUMEI」「百明青汁」／赤い角印。スティックは濃い緑に金のロゴ）", "注釈": "※画像はイメージです。個人の感想であり、効果・効能を保証するものではありません。", "横転元": "36_1558589761.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/百明青汁_横転元_2026-09-14/36_1558589761.jpg", "クライアント": "", "入稿日": ""}, {"id": "AJ-37", "商材": "百明青汁", "略": "AJ", "番号": "37", "工程": "依頼済", "担当": "外注が作っている", "日数": 0, "依頼日": "2026-09-14", "比率": "横長(1200×628)／300KB未満", "訴求": "【左・明朝の白い見出し2行】もう一度、\n歩きたい場所へ。\n【罫線の下】2025年にノーベル賞を受賞した成分を配合\n【下の小さい行】散歩を諦めた70代の方へ／1日1杯", "絵": "【右】明るいグレーの地に、紙箱を両手で静かに持つ70代の日本人女性の手元。商材は人の手に。素材フォルダの実物写真どおりに（形・色・ロゴを変えない。横長の紙箱／中央が濃い緑の帯で左右がベージュの和紙調／中央に金の円と金のロゴ／金で「HYAKUMEI」「百明青汁」／赤い角印。スティックは濃い緑に金のロゴ）", "注釈": "※画像はイメージです。個人の感想であり、効果・効能を保証するものではありません。2025年ノーベル賞で受賞のTreg細胞のこと", "横転元": "37_1559226446.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/百明青汁_横転元_2026-09-14/37_1559226446.jpg", "クライアント": "", "入稿日": ""}, {"id": "AJ-38", "商材": "百明青汁", "略": "AJ", "番号": "38", "工程": "依頼済", "担当": "外注が作っている", "日数": 0, "依頼日": "2026-09-14", "比率": "横長(1200×628)／300KB未満", "訴求": "【上の画像の下・極太ゴシック4行】「階段の下りで止まるシニアのひざ、実は…」\nノーベル賞を受賞した成分が判明。\n削っていたのは年齢ではなく炎症細胞だった。\nまるで別人級\n【最下段の小さい行】7,992円が1,980円", "絵": "【上】70代の日本人男性が階段の途中で手すりに手を置いている寄りの写真1枚。**左右2枚の対比にしない**（決めごと620。対比は審査で落ちた実例がある）。【下】白地に極太ゴシックの記事風見出し。商材は写さない。", "注釈": "※画像はイメージです。個人の感想であり、効果・効能を保証するものではありません。2025年ノーベル賞で受賞のTreg細胞のこと", "横転元": "38_1558937232.jpg", "完成": "", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/百明青汁_横転元_2026-09-14/38_1558937232.jpg", "クライアント": "", "入稿日": ""}], "ページ": "AJ", "絞り": "百明青汁"}</script>
+<script>
+const D = JSON.parse(document.getElementById('data').textContent);
+const MINE = ['納品ずみ','入稿待ち','審査おちた','配信待ち'];
+const DONE = ['配信中'];
+const kind = s => MINE.includes(s) ? 'mine' : DONE.includes(s) ? 'done' : 'wait';
+const 順 = D.工程.map(x => x.名);
+let fStage = null, fPj = null, fQ = '';
+
+/* 案件ナビ */
+const nav = document.getElementById('nav');
+nav.innerHTML = [['index', 'ぜんぶ', '']].concat(
+  Object.entries(D.略号).map(([名, 略]) => [略, 名, 略])
+).map(([f, 名, 略]) =>
+  `<a href="${f}.html"${D.ページ === f ? ' aria-current="page"' : ''}>${名}`
+  + (略 ? `<b>${略}</b>` : '') + `</a>`).join('');
+
+document.title = (D.絞り ? D.絞り + '　' : '') + 'CR工程板';
+if (D.絞り) document.querySelector('h1').textContent = D.絞り;
+document.getElementById('sub').textContent =
+  `${D.作成} 時点　シートの写し${D.写し[D.絞り] ? '（' + D.写し[D.絞り] + '）' : ''}から作っている　`
+  + (D.絞り ? `このページは${D.絞り}の${D.CR.length}本` : `7案件 ${D.CR.length}本`);
+const cnt = k => D.CR.filter(c => kind(c.工程) === k).length;
+nMine.textContent = cnt('mine'); nWait.textContent = cnt('wait');
+nAll.textContent = D.CR.length;
+
+/* 工程レール */
+const rail = document.getElementById('rail');
+D.工程.forEach(st => {
+  const n = D.CR.filter(c => c.工程 === st.名).length;
+  const b = document.createElement('button');
+  b.className = 'stage ' + kind(st.名);
+  b.setAttribute('aria-pressed', 'false');
+  b.innerHTML = `<span class="sn">${st.名}</span>`
+    + `<span class="sc${n ? '' : ' zero'}">${n || '·'}</span>`
+    + `<span class="st">${st.担当}</span>`;
+  b.onclick = () => { fStage = fStage === st.名 ? null : st.名; draw(); };
+  b.dataset.stage = st.名;
+  rail.appendChild(b);
+});
+
+/* 案件の絞り込み */
+const pjs = document.getElementById('pjs');
+if (D.絞り) document.getElementById('pjs').hidden = true;
+Object.entries(D.略号).forEach(([名, 略]) => {
+  const n = D.CR.filter(c => c.商材 === 名).length;
+  const b = document.createElement('button');
+  b.className = 'f'; b.setAttribute('aria-pressed', 'false');
+  b.textContent = `${略}　${名}　${n}`;
+  b.onclick = () => { fPj = fPj === 名 ? null : 名; draw(); };
+  b.dataset.pj = 名;
+  pjs.appendChild(b);
+});
+
+/* 止まり */
+const stalls = document.getElementById('stalls');
+(() => {
+  const g = {};
+  D.CR.filter(c => c.日数 >= 3).forEach(c => {
+    const k = c.商材 + '|' + c.工程;
+    (g[k] = g[k] || []).push(c);
+  });
+  const list = Object.entries(g).map(([k, v]) => {
+    const [pj, st] = k.split('|');
+    return { pj, st, v, k: kind(st), max: Math.max(...v.map(c => c.日数)) };
+  }).sort((a, b) => (a.k === 'mine' ? 0 : 1) - (b.k === 'mine' ? 0 : 1) || b.max - a.max);
+  if (!list.length) { stalls.innerHTML = '<div class="stall">止まっているものは無い。</div>'; return; }
+  list.forEach(x => {
+    const d = document.createElement('div');
+    d.className = 'stall ' + x.k;
+    const ids = x.v.slice(0, 14).map(c => `<button class="chip" data-id="${c.id}">${c.id}</button>`).join('')
+      + (x.v.length > 14 ? `<span class="cnt">ほか${x.v.length - 14}</span>` : '');
+    d.innerHTML = `<span class="who">${x.st}</span><span class="pj">${x.pj}</span>`
+      + `<span class="cnt">${x.v.length}本・最長${x.max}日 → ${D.工程.find(s => s.名 === x.st).担当}</span>`
+      + `<span class="ids">${ids}</span>`;
+    stalls.appendChild(d);
+  });
+})();
+
+/* 登録簿 */
+const rows = document.getElementById('rows');
+function draw() {
+  document.querySelectorAll('.stage').forEach(b =>
+    b.setAttribute('aria-pressed', b.dataset.stage === fStage));
+  document.querySelectorAll('.f[data-pj]').forEach(b =>
+    b.setAttribute('aria-pressed', b.dataset.pj === fPj));
+  const q = fQ.trim().toLowerCase();
+  const list = D.CR.filter(c =>
+    (!fStage || c.工程 === fStage) && (!fPj || c.商材 === fPj) &&
+    (!q || c.id.toLowerCase().includes(q) || (c.訴求 + c.絵 + c.検収).toLowerCase().includes(q))
+  ).sort((a, b) => 順.indexOf(a.工程) - 順.indexOf(b.工程) || b.日数 - a.日数);
+  rows.innerHTML = list.map(c => {
+    const k = kind(c.工程);
+    return `<tr class="${k}" data-id="${c.id}">`
+      + `<td class="id">${c.id}</td>`
+      + `<td class="stg"><span class="pill ${k}">${c.工程}</span></td>`
+      + `<td class="hx">${D.絞り ? c.担当 : c.商材}</td>`
+      + `<td class="txt hx">${(c.訴求 || c.絵 || '').replace(/\n/g, ' ').slice(0, 70)}</td>`
+      + `<td class="d">${c.日数}日</td></tr>`;
+  }).join('');
+  document.getElementById('none').hidden = list.length > 0;
+}
+
+/* 中身 */
+const sheet = document.getElementById('sheet'), scrim = document.getElementById('scrim');
+function open_(id) {
+  const c = D.CR.find(x => x.id === id); if (!c) return;
+  const k = kind(c.工程);
+  sId.textContent = c.id;
+  sPj.textContent = `${c.商材}　${c.番号}番　${c.比率 || ''}`;
+  sTurn.className = 'turn ' + k;
+  sTurn.innerHTML = `<b>${c.工程}</b> <span>→ ${c.担当}・${c.日数}日</span>`;
+  const F = [['依頼日', c.依頼日], ['入れる訴求', c.訴求], ['絵の指示', c.絵],
+    ['入れる注釈', c.注釈], ['横転元', c.横転元], ['元の実物', c.元の実物],
+    ['検収', c.検収], ['審査', c.審査], ['おちた理由', c.落ち理由], ['配信', c.配信],
+    ['クライアント', c.クライアント], ['入稿日', c.入稿日]];
+  sDl.innerHTML = F.filter(([, v]) => v).map(([n, v]) => {
+    const mono = ['横転元', '元の実物', '依頼日', '入稿日'].includes(n);
+    return `<dt>${n}</dt><dd class="${mono ? 'mono' : ''}">${esc(v)}</dd>`;
+  }).join('') + (c.完成 ? `<dt>完成CR</dt><dd class="mono"><a href="${c.完成}" target="_blank" rel="noopener">Driveで開く</a></dd>` : '');
+  sheet.classList.add('open'); scrim.classList.add('open');
+  sheet.setAttribute('aria-hidden', 'false'); document.getElementById('close').focus();
+}
+const esc = s => String(s).replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m]));
+function shut() {
+  sheet.classList.remove('open'); scrim.classList.remove('open');
+  sheet.setAttribute('aria-hidden', 'true');
+}
+document.getElementById('close').onclick = shut;
+scrim.onclick = shut;
+addEventListener('keydown', e => { if (e.key === 'Escape') shut(); });
+document.body.addEventListener('click', e => {
+  const t = e.target.closest('[data-id]'); if (t) open_(t.dataset.id);
+});
+document.getElementById('q').addEventListener('input', e => { fQ = e.target.value; draw(); });
+document.getElementById('clear').onclick = () => {
+  fStage = fPj = null; fQ = ''; document.getElementById('q').value = ''; draw();
+};
+if (!D.絞り) document.getElementById('th3').textContent = '案件';
+draw();
+</script>
