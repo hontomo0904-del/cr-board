@@ -339,7 +339,7 @@ function draw() {
     return `<tr class="${k}" data-id="${c.id}">`
       + `<td class="id">${c.id}</td>`
       + `<td class="stg"><span class="pill ${k}">${c.工程}</span></td>`
-      + `<td class="hx">${D.絞り ? c.担当 : c.商材}</td>`
+      + `<td class="hx">${D.絞り ? c.やること : c.商材}</td>`
       + `<td class="txt hx">${(c.訴求 || c.絵 || '').replace(/\n/g, ' ').slice(0, 200)}</td>`
       + `<td class="d">${c.日数}日</td></tr>`;
   }).join('');
@@ -354,7 +354,7 @@ function open_(id) {
   sId.textContent = c.id;
   sPj.textContent = `${c.商材}　${c.番号}番　${c.比率 || ''}`;
   sTurn.className = 'turn ' + k;
-  sTurn.innerHTML = `<b>${c.工程}</b> <span>→ ${c.担当}・${c.日数}日</span>`;
+  sTurn.innerHTML = `<b>${c.工程}</b> <span>→ ${c.やること}・${c.日数}日</span>`;
   const F = [['依頼日', c.依頼日], ['入れる訴求', c.訴求], ['絵の指示', c.絵],
     ['入れる注釈', c.注釈], ['横転元', c.横転元], ['元の実物', c.元の実物],
     ['検収', c.検収], ['審査', c.審査], ['おちた理由', c.落ち理由], ['配信', c.配信],
