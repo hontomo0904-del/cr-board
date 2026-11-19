@@ -1,0 +1,426 @@
+<title>CR工程板</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ground:#f1f2ef; --surface:#fbfbfa; --sunk:#e8eae5;
+  --ink:#191b1e; --ink2:#5c6166; --ink3:#8b9096;
+  --rule:#d7d9d4; --rule2:#c3c6c0;
+  --shu:#b5392e; --shu-soft:#f3e2e0; --shu-line:#e0bdb8;
+  --ochre:#8c6d1f; --ochre-soft:#f2ecda; --ochre-line:#ddd0a8;
+  --matcha:#2f6b52; --matcha-soft:#e0ece6; --matcha-line:#b6d2c5;
+  --disp:"Zen Kaku Gothic New",-apple-system,"Hiragino Sans",sans-serif;
+  --body:"Noto Sans JP",-apple-system,"Hiragino Sans",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#15171a; --surface:#1d2024; --sunk:#101215;
+    --ink:#e7e5e0; --ink2:#a2a7ad; --ink3:#71767d;
+    --rule:#2e3238; --rule2:#3d424a;
+    --shu:#e0675a; --shu-soft:#33211f; --shu-line:#5a322d;
+    --ochre:#cda546; --ochre-soft:#2b2618; --ochre-line:#54472447;
+    --matcha:#61b393; --matcha-soft:#17281f; --matcha-line:#2d4a3b;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#15171a; --surface:#1d2024; --sunk:#101215;
+  --ink:#e7e5e0; --ink2:#a2a7ad; --ink3:#71767d;
+  --rule:#2e3238; --rule2:#3d424a;
+  --shu:#e0675a; --shu-soft:#33211f; --shu-line:#5a322d;
+  --ochre:#cda546; --ochre-soft:#2b2618; --ochre-line:#544724;
+  --matcha:#61b393; --matcha-soft:#17281f; --matcha-line:#2d4a3b;
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font-family:var(--body);
+  font-size:14px;line-height:1.7;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px 90px}
+/* 案件ナビ */
+nav{display:flex;gap:0;overflow-x:auto;border-bottom:1px solid var(--rule);
+  margin:0 -20px 22px;padding:0 20px;position:sticky;top:0;background:var(--ground);z-index:10}
+nav a{flex:0 0 auto;padding:12px 13px 10px;font-size:12px;color:var(--ink2);
+  text-decoration:none;border-bottom:2px solid transparent;white-space:nowrap;
+  display:flex;align-items:baseline;gap:6px}
+nav a:hover{color:var(--ink)}
+nav a[aria-current]{color:var(--ink);border-bottom-color:var(--shu);font-weight:700}
+nav a b{font-family:var(--mono);font-size:10.5px;font-weight:500;color:var(--ink3)}
+nav a[aria-current] b{color:var(--shu)}
+nav a:focus-visible{outline:2px solid var(--ink);outline-offset:-3px}
+
+/* 見出し */
+header{display:flex;flex-wrap:wrap;align-items:flex-end;gap:14px 22px;
+  padding-bottom:14px;border-bottom:2px solid var(--ink)}
+h1{font-family:var(--disp);font-weight:900;font-size:27px;letter-spacing:.06em;
+  margin:0;line-height:1.1}
+.sub{color:var(--ink2);font-size:12.5px;margin:3px 0 0}
+.hstat{margin-left:auto;display:flex;gap:20px;text-align:right}
+.hstat div span{display:block}
+.hstat .n{font-family:var(--mono);font-weight:600;font-size:22px;
+  font-variant-numeric:tabular-nums;line-height:1.15}
+.hstat .l{font-size:10.5px;letter-spacing:.13em;color:var(--ink3)}
+.hstat .mine .n{color:var(--shu)}
+
+h2{font-family:var(--disp);font-weight:700;font-size:14px;letter-spacing:.14em;
+  margin:36px 0 3px;display:flex;align-items:baseline;gap:10px}
+h2 em{font-style:normal;font-family:var(--body);font-weight:400;font-size:11.5px;
+  letter-spacing:0;color:var(--ink3)}
+
+/* 工程レール */
+#tally{margin:8px 0 0;font-size:11.5px;font-family:var(--mono);
+  padding:6px 10px;border-left:3px solid var(--matcha);background:var(--matcha-soft);
+  color:var(--ink2)}
+#tally.ng{border-left-color:var(--shu);background:var(--shu-soft);color:var(--shu)}
+.rail{display:flex;gap:0;overflow-x:auto;padding:14px 0 4px;margin-top:12px}
+.stage{flex:0 0 auto;min-width:96px;padding:10px 12px 11px;background:var(--surface);
+  border:1px solid var(--rule);border-right:none;position:relative;cursor:pointer;
+  text-align:left;font:inherit;color:inherit;transition:background .12s}
+.stage:last-child{border-right:1px solid var(--rule)}
+.stage:hover,.stage:focus-visible{background:var(--sunk);outline:none}
+.stage:focus-visible{box-shadow:inset 0 0 0 2px var(--ink)}
+.stage[aria-pressed="true"]{background:var(--ink);border-color:var(--ink)}
+.stage[aria-pressed="true"] .sn,.stage[aria-pressed="true"] .sc,
+.stage[aria-pressed="true"] .st{color:var(--ground)}
+.stage::before{content:"";position:absolute;inset:0 0 auto 0;height:3px}
+.stage.mine::before{background:var(--shu)}
+.stage.wait::before{background:var(--ochre)}
+.stage.done::before{background:var(--matcha)}
+.sn{font-size:11.5px;font-weight:500;display:block;white-space:nowrap}
+.sc{font-family:var(--mono);font-weight:600;font-size:23px;line-height:1.2;
+  font-variant-numeric:tabular-nums;display:block;margin-top:2px}
+.stage.mine .sc{color:var(--shu)} .stage.wait .sc{color:var(--ochre)}
+.stage.done .sc{color:var(--matcha)}
+.sc.zero{color:var(--ink3)!important;font-weight:400}
+.st{font-size:10px;color:var(--ink3);display:block;white-space:nowrap}
+
+/* Todo */
+.stalls{display:grid;gap:1px;background:var(--rule);border:1px solid var(--rule);
+  margin-top:12px}
+.todohead{background:var(--ink);color:var(--ground);padding:8px 14px;
+  font-family:var(--disp);font-weight:700;font-size:13px;display:flex;gap:10px;
+  align-items:baseline}
+.todohead em{font-style:normal;font-family:var(--mono);font-size:10.5px;
+  padding:1px 6px;background:var(--shu);color:#fff;flex:0 0 auto;letter-spacing:.04em}
+.todohead.wait em{background:var(--ochre)}
+.todohead span{font-family:var(--body);font-weight:400;font-size:11px;opacity:.72;
+  margin-left:auto;white-space:nowrap}
+.stall{background:var(--surface);padding:9px 14px;display:flex;flex-wrap:wrap;
+  gap:5px 12px;align-items:baseline;border-left:3px solid transparent}
+.stall.mine{border-left-color:var(--shu)}
+.stall.wait{border-left-color:var(--ochre)}
+.stall .pj{font-size:11.5px;color:var(--ink2);min-width:100px}
+.stall .cnt{font-family:var(--mono);font-size:11px;color:var(--ink3);min-width:96px}
+.stall .ids{display:flex;flex-wrap:wrap;gap:4px;flex:1 1 240px}
+
+/* 番号チップ */
+.chip{font-family:var(--mono);font-size:11px;font-weight:500;padding:1px 6px;
+  border:1px solid var(--rule2);background:var(--ground);color:var(--ink2);
+  cursor:pointer;letter-spacing:.02em}
+.chip:hover,.chip:focus-visible{border-color:var(--ink);color:var(--ink);outline:none}
+
+/* 絞り込み */
+.filters{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:12px}
+.f{font-family:var(--body);font-size:11.5px;padding:4px 10px;border:1px solid var(--rule2);
+  background:var(--surface);color:var(--ink2);cursor:pointer;letter-spacing:.03em}
+.f[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--ground)}
+.f:focus-visible{outline:2px solid var(--ink);outline-offset:1px}
+#q{flex:1 1 220px;min-width:160px;font-family:var(--mono);font-size:12px;padding:4px 9px;
+  border:1px solid var(--rule2);background:var(--surface);color:var(--ink)}
+#q:focus{outline:none;border-color:var(--ink)}
+
+
+/* 登録簿 */
+/* **登録簿だけ横いっぱい**（本人 2026-09-14）。上の段は1180pxのまま、
+   ここだけ画面幅に抜く。左端は上と揃うので、右に伸びる形になる */
+.bleed{width:100vw;margin-left:calc(50% - 50vw);padding:0 max(20px, calc(50vw - 590px))}
+table{width:100%;border-collapse:collapse;margin-top:10px;font-size:12.5px;
+  table-layout:fixed}
+col.cId{width:78px} col.cStg{width:104px} col.cWho{width:150px} col.cD{width:60px}
+thead th{text-align:left;font-family:var(--disp);font-weight:700;font-size:10.5px;
+  letter-spacing:.12em;color:var(--ink3);padding:0 10px 6px;border-bottom:1px solid var(--rule2);
+  white-space:nowrap}
+tbody tr{border-bottom:1px solid var(--rule);cursor:pointer}
+tbody tr:hover{background:var(--surface)}
+tbody td{padding:7px 10px;vertical-align:top}
+td.id{font-family:var(--mono);font-weight:600;font-size:12px;white-space:nowrap;
+  border-left:3px solid transparent;padding-left:9px}
+tr.mine td.id{border-left-color:var(--shu)}
+tr.wait td.id{border-left-color:var(--ochre)}
+tr.done td.id{border-left-color:var(--matcha)}
+td.stg{white-space:nowrap;font-size:11.5px}
+td.d{font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--ink3);
+  text-align:right;white-space:nowrap;font-size:11.5px}
+td.txt{color:var(--ink2);max-width:1px;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap}
+.pill{display:inline-block;font-size:10.5px;padding:0 6px;border:1px solid;
+  letter-spacing:.02em}
+.pill.mine{color:var(--shu);border-color:var(--shu-line);background:var(--shu-soft)}
+.pill.wait{color:var(--ochre);border-color:var(--ochre-line);background:var(--ochre-soft)}
+.pill.done{color:var(--matcha);border-color:var(--matcha-line);background:var(--matcha-soft)}
+.none{padding:24px 10px;color:var(--ink3);font-size:12.5px}
+
+/* 中身 */
+.sheet{position:fixed;inset:0 0 0 auto;width:min(560px,100%);background:var(--surface);
+  border-left:1px solid var(--rule2);overflow-y:auto;padding:22px 24px 60px;
+  transform:translateX(100%);transition:transform .2s ease;z-index:20;
+  box-shadow:-14px 0 40px rgba(0,0,0,.13)}
+.sheet.open{transform:none}
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.3);opacity:0;pointer-events:none;
+  transition:opacity .2s;z-index:19}
+.scrim.open{opacity:1;pointer-events:auto}
+.sheet h3{font-family:var(--mono);font-weight:600;font-size:21px;margin:0;letter-spacing:.02em}
+.sheet .pj2{font-size:11.5px;color:var(--ink3);margin:1px 0 14px}
+.close{position:absolute;top:16px;right:18px;background:none;border:1px solid var(--rule2);
+  color:var(--ink2);font-size:15px;line-height:1;padding:4px 8px;cursor:pointer;font-family:var(--mono)}
+.close:hover{border-color:var(--ink);color:var(--ink)}
+.turn{padding:9px 12px;border-left:3px solid;margin-bottom:16px;font-size:12.5px}
+.turn.mine{border-color:var(--shu);background:var(--shu-soft)}
+.turn.wait{border-color:var(--ochre);background:var(--ochre-soft)}
+.turn.done{border-color:var(--matcha);background:var(--matcha-soft)}
+.turn b{font-family:var(--disp);font-size:13.5px}
+.turn span{color:var(--ink2)}
+dl{margin:0;display:grid;grid-template-columns:78px 1fr;gap:1px 0;
+  background:var(--rule);border:1px solid var(--rule)}
+dt{background:var(--sunk);padding:7px 9px;font-size:10.5px;letter-spacing:.08em;
+  color:var(--ink3);font-family:var(--disp);font-weight:700}
+dd{background:var(--surface);margin:0;padding:7px 11px;font-size:12.5px;
+  white-space:pre-wrap;word-break:break-word;line-height:1.75}
+dd.mono{font-family:var(--mono);font-size:11.5px}
+dd a{color:var(--shu)}
+@media (max-width:700px){
+  .bleed{width:auto;margin-left:0;padding:0}
+  .wrap{padding:20px 14px 80px}
+  h1{font-size:22px} .hstat{margin-left:0;width:100%;justify-content:flex-start}
+  .stall .who,.stall .pj{min-width:0}
+  th.hx,td.hx{display:none}
+  dl{grid-template-columns:66px 1fr}
+  .sheet{width:100%;border-left:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <nav id="nav"></nav>
+  <header>
+    <div>
+      <h1>CR工程板</h1>
+      <p class="sub" id="sub"></p>
+    </div>
+    <div class="hstat">
+      <div class="mine"><span class="n" id="nMine">–</span><span class="l">自分で進める</span></div>
+      <div><span class="n" id="nWait">–</span><span class="l">見に行く</span></div>
+      <div><span class="n" id="nAll">–</span><span class="l">ぜんぶ</span></div>
+    </div>
+  </header>
+
+  <h2>工程 <em>クリックで絞り込む／上の線の色は誰の番か</em></h2>
+  <div class="rail" id="rail"></div>
+
+  <p id="tally"></p>
+  <h2>Todo <em id="todoNote">工程ごとのやること（進＝自分で進める／見＝見に行く・催促する）</em></h2>
+  <div class="stalls" id="stalls"></div>
+
+  <h2>登録簿 <em>依頼シートの番号順・新しいものが上／行をクリックすると依頼の中身が出る</em></h2>
+  <div class="filters" id="pjs"></div>
+  <div class="filters">
+    <input id="q" placeholder="番号か言葉で探す（MB-48 / 白カビ / 耳鳴り）" autocomplete="off">
+    <button class="f" id="clear">絞り込みを消す</button>
+  </div>
+  <table>
+    <thead><tr>
+      <th>CR<span style="font-weight:400;color:var(--ink3)">▾</span></th><th>工程</th><th class="hx" id="th3">次は誰の番か</th>
+      <th class="hx">入れる訴求</th><th>日数</th>
+    </tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+  <div class="none" id="none" hidden>当てはまるCRがない。</div>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="sheet" id="sheet" aria-hidden="true">
+  <button class="close" id="close" aria-label="閉じる">✕</button>
+  <h3 id="sId"></h3>
+  <p class="pj2" id="sPj"></p>
+  <div class="turn" id="sTurn"></div>
+  <dl id="sDl"></dl>
+</aside>
+
+<script type="application/json" id="data">{"作成": "2026-11-19 18:01", "行数": {"メディカルブレス": 157, "デイリーワン": 284, "ESTH": 129, "セアップ": 132, "見える力記憶力": 100, "スリムバター": 60, "Suuu": 85, "NICOMEDICO": 70, "ラリッチスカルプ": 70, "爽軽青汁": 30, "痩せ菌味噌汁": 41, "百聞之才錠": 49, "百明青汁": 30, "ダンカツ": 50, "DUALORBDEEPLIFT": 15, "エルグロウ": 50, "トメラック": 20, "リバイタルゴールド": 40, "タヴァティー": 20, "あをによし": 18, "ジューシージョリー": 0}, "工程": [{"名": "依頼前", "やること": "横転元を上げて依頼に出す", "種": "進"}, {"名": "依頼済", "やること": "外注から上がってきたか見る", "種": "見"}, {"名": "納品ずみ", "やること": "納品物を確認する（自分とクライアント）", "種": "進"}, {"名": "直し中", "やること": "直しが上がってきたか見る", "種": "見"}, {"名": "入稿待ち", "やること": "審査に出す", "種": "進"}, {"名": "審査中", "やること": "審査の結果を見る", "種": "見"}, {"名": "審査おちた", "やること": "作り直す", "種": "進"}, {"名": "配信待ち", "やること": "配信に載せる", "種": "進"}, {"名": "初動配信中", "やること": "配信の結果を更新する", "種": "進"}, {"名": "結果でた", "やること": "", "種": ""}, {"名": "作り直しずみ", "やること": "", "種": ""}, {"名": "取り下げ", "やること": "", "種": ""}, {"名": "停止", "やること": "", "種": ""}], "略号": {"メディカルブレス": "MB", "デイリーワン": "DL", "ESTH": "ES", "セアップ": "SU", "見える力記憶力": "MK", "スリムバター": "SB", "Suuu": "SQ", "NICOMEDICO": "NM", "ラリッチスカルプ": "LR", "爽軽青汁": "SK", "痩せ菌味噌汁": "YM", "百聞之才錠": "HB", "百明青汁": "AJ", "ダンカツ": "DK", "DUALORBDEEPLIFT": "DO", "エルグロウ": "EG", "トメラック": "TM", "リバイタルゴールド": "RV", "タヴァティー": "TV", "あをによし": "AN", "ジューシージョリー": "JJ"}, "写し": {"メディカルブレス": "11-18 15:19", "デイリーワン": "11-19 17:57", "ESTH": "11-18 15:19", "セアップ": "11-18 15:19", "見える力記憶力": "11-18 15:19", "スリムバター": "11-18 15:19", "Suuu": "11-18 15:19", "NICOMEDICO": "11-18 15:19", "ラリッチスカルプ": "11-18 15:19", "爽軽青汁": "11-18 15:19", "痩せ菌味噌汁": "11-18 15:19", "百聞之才錠": "11-18 15:19", "百明青汁": "11-18 15:19", "ダンカツ": "11-18 15:19", "DUALORBDEEPLIFT": "11-18 15:19", "エルグロウ": "11-19 17:28", "トメラック": "11-18 15:19", "リバイタルゴールド": "11-18 15:19", "タヴァティー": "11-18 15:19", "あをによし": "11-18 15:19", "ジューシージョリー": ""}, "CR": [{"id": "TM-1", "商材": "トメラック", "略": "TM", "番号": "1", "工程": "納品ずみ", "やること": "納品物を確認する（自分とクライアント）", "種": "進", "日数": 28, "依頼日": "2026-10-22", "比率": "正方形(1200×1200)／300KB未満（SN）", "訴求": "【文字なし・文字は入れない】（絵の補足: 街なかで、60代女性が急な尿意に前かがみで脚を閉じてこらえる。訴求は見出しで「くしゃみでジュワッ…またやってしまった」を言う）", "絵": "【全面】高層ビルのある街なかで、オレンジのTシャツにジーンズの60代の日本人女性（実在の人物にしない）が、急な尿意に前かがみになり両脚をぎゅっと閉じて顔をしかめている全身。服はきちんと着ている。商材は写さない。\n正方形の全面写真（スマートニュース用）。シンプルに、素朴なスマホ撮影のような生活感で。画像の中に文字を入れない（吹き出し・看板・テロップ・効果音・ポスター・画面・パッケージ以外の文字も入れない。商材のロゴだけは実物どおり）。下着・股の部分・漏れた跡は写さない。注釈は画像の左上か右上の角に1行で小さく、目立たせない。注釈は長くなっても改行せず1行に収める（字を小さくして横幅に入れる。2行以上に折り返さない）。\n【提供】画像の右下に「提供:さくらフォレスト」を1行で小さく。注釈とは別に入れる（注釈と並べて置いてもよい）。株式会社は付けない", "注釈": "※PR ※画像はイメージです ※個人の感想であり効果効能を保証するものではありません", "横転元": "1_114740455.jpg", "完成": "https://drive.google.com/file/d/1MYNdqZXLSswhdGxshLnUgvRf-3mTqjUt/view?usp=drive_link", "外注者": "髙野", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/トメラック/横転元_2026-10-22/1_114740455.jpg", "クライアント": "", "入稿日": "", "作り直し先": "", "作り直し元": ""}, {"id": "TM-2", "商材": "トメラック", "略": "TM", "番号": "2", "工程": "納品ずみ", "やること": "納品物を確認する（自分とクライアント）", "種": "進", "日数": 28, "依頼日": "2026-10-22", "比率": "正方形(1200×1200)／300KB未満（SN）", "訴求": "【文字なし・文字は入れない】（絵の補足: バス停で、70代女性がそわそわと時計を見る（トイレを気にしている）。訴求は見出しで「遠出も映画もすっかり諦めた」を言う）", "絵": "【全面】郊外のバス停で、カーディガンに帽子の70代の日本人女性（実在の人物にしない）が、ベンチから腰を浮かせて腕時計を見ながら、そわそわと落ち着かない顔をしている。看板・時刻表の文字は入れない。商材は写さない。\n正方形の全面写真（スマートニュース用）。シンプルに、素朴なスマホ撮影のような生活感で。画像の中に文字を入れない（吹き出し・看板・テロップ・効果音・ポスター・画面・パッケージ以外の文字も入れない。商材のロゴだけは実物どおり）。下着・股の部分・漏れた跡は写さない。注釈は画像の左上か右上の角に1行で小さく、目立たせない。注釈は長くなっても改行せず1行に収める（字を小さくして横幅に入れる。2行以上に折り返さない）。\n【提供】画像の右下に「提供:さくらフォレスト」を1行で小さく。注釈とは別に入れる（注釈と並べて置いてもよい）。株式会社は付けない", "注釈": "※PR ※画像はイメージです ※個人の感想であり効果効能を保証するものではありません", "横転元": "2_114546872.jpg", "完成": "https://drive.google.com/file/d/1Fat-yAGYL07qHh8oAf2tRa9aark-7dBE/view?usp=drive_link", "外注者": "髙野", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/トメラック/横転元_2026-10-22/2_114546872.jpg", "クライアント": "", "入稿日": "", "作り直し先": "", "作り直し元": ""}, {"id": "TM-3", "商材": "トメラック", "略": "TM", "番号": "3", "工程": "直し中", "やること": "直しが上がってきたか見る", "種": "見", "日数": 28, "依頼日": "2026-10-22", "比率": "正方形(1200×1200)／300KB未満（SN）", "訴求": "【文字なし・文字は入れない】（絵の補足: 記者会見で、白衣の女性医師がマイクで真剣に話す。訴求は見出しで「厚生労働省が認めた第2類医薬品」を言う）", "絵": "【全面】記者会見の会場で、白衣の50代の日本人女性医師（実在の人物にしない）がマイクを持って真剣な顔で話している胸から上。背景は濃い紺のカーテン。文字・ロゴは入れない。商材は写さない。\n正方形の全面写真（スマートニュース用）。シンプルに、素朴なスマホ撮影のような生活感で。画像の中に文字を入れない（吹き出し・看板・テロップ・効果音・ポスター・画面・パッケージ以外の文字も入れない。商材のロゴだけは実物どおり）。下着・股の部分・漏れた跡は写さない。注釈は画像の左上か右上の角に1行で小さく、目立たせない。注釈は長くなっても改行せず1行に収める（字を小さくして横幅に入れる。2行以上に折り返さない）。\n【提供】画像の右下に「提供:さくらフォレスト」を1行で小さく。注釈とは別に入れる（注釈と並べて置いてもよい）。株式会社は付けない", "注釈": "※PR ※画像はイメージです ※個人の感想であり効果効能を保証するものではありません", "横転元": "3_114739434.jpg", "完成": "https://drive.google.com/file/d/1CNDvtO9eVpLiVvMDSuuUyw3WaqRyGNfZ/view?usp=drive_link", "外注者": "髙野", "検収": "白衣がNGのため\n→服装を白衣以外の権威っぽい服装に", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/トメラック/横転元_2026-10-22/3_114739434.jpg", "クライアント": "", "入稿日": "", "作り直し先": "", "作り直し元": ""}, {"id": "TM-4", "商材": "トメラック", "略": "TM", "番号": "4", "工程": "直し中", "やること": "直しが上がってきたか見る", "種": "見", "日数": 28, "依頼日": "2026-10-22", "比率": "正方形(1200×1200)／300KB未満（SN）", "訴求": "【文字なし・文字は入れない】（絵の補足: やわらかい室内光で、60代女性がほっとした笑顔でこちらを見る。訴求は見出しで「今では朝までぐっすり」を言う）", "絵": "【全面】やわらかい夕方の室内の光で、60代の日本人女性（実在の人物にしない）がほっとした穏やかな笑顔でこちらを見ている胸から上の寄り。商材は写さない。\n正方形の全面写真（スマートニュース用）。シンプルに、素朴なスマホ撮影のような生活感で。画像の中に文字を入れない（吹き出し・看板・テロップ・効果音・ポスター・画面・パッケージ以外の文字も入れない。商材のロゴだけは実物どおり）。下着・股の部分・漏れた跡は写さない。注釈は画像の左上か右上の角に1行で小さく、目立たせない。注釈は長くなっても改行せず1行に収める（字を小さくして横幅に入れる。2行以上に折り返さない）。\n【提供】画像の右下に「提供:さくらフォレスト」を1行で小さく。注釈とは別に入れる（注釈と並べて置いてもよい）。株式会社は付けない", "注釈": "※PR ※画像はイメージです ※個人の感想であり効果効能を保証するものではありません", "横転元": "4_114776695.jpg", "完成": "https://drive.google.com/file/d/17he5CLSaKq2UhivuZr1-Mul2hkuHgCoU/view?usp=drive_link", "外注者": "髙野", "検収": "https://drive.google.com/file/d/1J40XScFaugXs2GsEqCsO7aCr0xpf5H5k/view?usp=drive_link\nちょっとただの画像すぎるので\n\nこの人を70歳くらいに変えて\n上記リンクのような画像に変更", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/トメラック/横転元_2026-10-22/4_114776695.jpg", "クライアント": "", "入稿日": "", "作り直し先": "", "作り直し元": ""}, {"id": "TM-5", "商材": "トメラック", "略": "TM", "番号": "5", "工程": "納品ずみ", "やること": "納品物を確認する（自分とクライアント）", "種": "進", "日数": 28, "依頼日": "2026-10-22", "比率": "正方形(1200×1200)／300KB未満（SN）", "訴求": "【文字なし・文字は入れない】（絵の補足: 紺のスクラブの60代男性医師が真剣な顔でこちらを見る（灰色の地）。訴求は見出しで「9割が知らない尿もれの本当の原因」を言う）", "絵": "【全面】灰色の地で、紺のスクラブの60代の日本人男性医師（実在の人物にしない）が真剣な顔でまっすぐこちらを見ている胸から上。商材は写さない。\n正方形の全面写真（スマートニュース用）。シンプルに、素朴なスマホ撮影のような生活感で。画像の中に文字を入れない（吹き出し・看板・テロップ・効果音・ポスター・画面・パッケージ以外の文字も入れない。商材のロゴだけは実物どおり）。下着・股の部分・漏れた跡は写さない。注釈は画像の左上か右上の角に1行で小さく、目立たせない。注釈は長くなっても改行せず1行に収める（字を小さくして横幅に入れる。2行以上に折り返さない）。\n【提供】画像の右下に「提供:さくらフォレスト」を1行で小さく。注釈とは別に入れる（注釈と並べて置いてもよい）。株式会社は付けない", "注釈": "※PR ※画像はイメージです ※個人の感想であり効果効能を保証するものではありません", "横転元": "5_114405306.jpg", "完成": "https://drive.google.com/file/d/1j5OzE2pYQOLn46Z_MWjYcR67HIs25DzX/view?usp=drive_link", "外注者": "髙野", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/トメラック/横転元_2026-10-22/5_114405306.jpg", "クライアント": "", "入稿日": "", "作り直し先": "", "作り直し元": ""}, {"id": "TM-6", "商材": "トメラック", "略": "TM", "番号": "6", "工程": "納品ずみ", "やること": "納品物を確認する（自分とクライアント）", "種": "進", "日数": 28, "依頼日": "2026-10-22", "比率": "正方形(1200×1200)／300KB未満（SN）", "訴求": "【文字なし・文字は入れない】（絵の補足: 骨盤まわりのやわらかい断面イラスト（尿道の出口の筋肉がゆるむ）。訴求は見出しで「原因は尿道括約筋のゆるみ」を言う）", "絵": "【全面】黒い地に、女性の骨盤と尿道まわりの筋肉のやわらかい断面イラスト（医学図のタッチ・グロテスクにしない）。出口の筋肉がゆるんでいる様子を下向きの白い矢印で示す。文字・名前は入れない。商材は描かない。\n正方形の全面写真（スマートニュース用）。シンプルに、素朴なスマホ撮影のような生活感で。画像の中に文字を入れない（吹き出し・看板・テロップ・効果音・ポスター・画面・パッケージ以外の文字も入れない。商材のロゴだけは実物どおり）。下着・股の部分・漏れた跡は写さない。注釈は画像の左上か右上の角に1行で小さく、目立たせない。注釈は長くなっても改行せず1行に収める（字を小さくして横幅に入れる。2行以上に折り返さない）。\n【提供】画像の右下に「提供:さくらフォレスト」を1行で小さく。注釈とは別に入れる（注釈と並べて置いてもよい）。株式会社は付けない", "注釈": "※PR ※画像はイメージです ※個人の感想であり効果効能を保証するものではありません", "横転元": "6_114125946.jpg", "完成": "https://drive.google.com/file/d/1xZwSrIDEdOaDg0p0j1LrEK6VbKXshAnQ/view?usp=drive_link", "外注者": "髙野", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/トメラック/横転元_2026-10-22/6_114125946.jpg", "クライアント": "", "入稿日": "", "作り直し先": "", "作り直し元": ""}, {"id": "TM-7", "商材": "トメラック", "略": "TM", "番号": "7", "工程": "直し中", "やること": "直しが上がってきたか見る", "種": "見", "日数": 28, "依頼日": "2026-10-22", "比率": "正方形(1200×1200)／300KB未満（SN）", "訴求": "【文字なし・文字は入れない】（絵の補足: ピンクの地に、尿もれパッドの袋とトメラックの袋のやさしいイラスト。訴求は見出しで「尿もれパッド卒業」を言う）", "絵": "【全面】桜柄の淡いピンクの地に、無地の尿もれパッドの袋（文字なし）とトメラックEXの袋（素材フォルダの実物写真どおりに（形・色・ロゴを変えない。濃い緑のスタンドパウチ／金の三日月の弧と光の粒／白の「トメラック」と金の「EX」／上に小さく「飲んで効く医薬品」／左にオレンジの丸））を並べたやさしいイラスト。人物なし。\n正方形の全面写真（スマートニュース用）。シンプルに、素朴なスマホ撮影のような生活感で。画像の中に文字を入れない（吹き出し・看板・テロップ・効果音・ポスター・画面・パッケージ以外の文字も入れない。商材のロゴだけは実物どおり）。下着・股の部分・漏れた跡は写さない。注釈は画像の左上か右上の角に1行で小さく、目立たせない。注釈は長くなっても改行せず1行に収める（字を小さくして横幅に入れる。2行以上に折り返さない）。\n【提供】画像の右下に「提供:さくらフォレスト」を1行で小さく。注釈とは別に入れる（注釈と並べて置いてもよい）。株式会社は付けない", "注釈": "※PR ※画像はイメージです ※個人の感想であり効果効能を保証するものではありません ※漢方理論に基づく頻尿の改善", "横転元": "7_114504511.jpg", "完成": "https://drive.google.com/file/d/13V-Q2_t5wkzeFZU1Og2_VXNXhcKCfw_E/view?usp=drive_link", "外注者": "髙野", "検収": "秋verに変更", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/トメラック/横転元_2026-10-22/7_114504511.jpg", "クライアント": "", "入稿日": "", "作り直し先": "", "作り直し元": ""}, {"id": "TM-8", "商材": "トメラック", "略": "TM", "番号": "8", "工程": "納品ずみ", "やること": "納品物を確認する（自分とクライアント）", "種": "進", "日数": 28, "依頼日": "2026-10-22", "比率": "正方形(1200×1200)／300KB未満（SN）", "訴求": "【文字なし・文字は入れない】（絵の補足: 60代女性の手が、袋を持ってこちらに見せる素朴なスマホ写真。訴求は見出しで「飲んで治す時代になりました」を言う）", "絵": "【全面】明るい台所を背景に、60代の日本人女性の手がトメラックEXの袋（素材フォルダの実物写真どおりに（形・色・ロゴを変えない。濃い緑のスタンドパウチ／金の三日月の弧と光の粒／白の「トメラック」と金の「EX」／上に小さく「飲んで効く医薬品」／左にオレンジの丸））を持ってこちらに見せている、素朴なスマホ撮影ふうの寄り。商材は人の手に。\n正方形の全面写真（スマートニュース用）。シンプルに、素朴なスマホ撮影のような生活感で。画像の中に文字を入れない（吹き出し・看板・テロップ・効果音・ポスター・画面・パッケージ以外の文字も入れない。商材のロゴだけは実物どおり）。下着・股の部分・漏れた跡は写さない。注釈は画像の左上か右上の角に1行で小さく、目立たせない。注釈は長くなっても改行せず1行に収める（字を小さくして横幅に入れる。2行以上に折り返さない）。\n【提供】画像の右下に「提供:さくらフォレスト」を1行で小さく。注釈とは別に入れる（注釈と並べて置いてもよい）。株式会社は付けない", "注釈": "※PR ※画像はイメージです ※個人の感想であり効果効能を保証するものではありません ※漢方理論に基づく頻尿の改善", "横転元": "8_113518335.jpg", "完成": "https://drive.google.com/file/d/1qa8HKB9PnokypxOAtIYv3cVyVBLUVbAT/view?usp=drive_link", "外注者": "髙野", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/トメラック/横転元_2026-10-22/8_113518335.jpg", "クライアント": "", "入稿日": "", "作り直し先": "", "作り直し元": ""}, {"id": "TM-9", "商材": "トメラック", "略": "TM", "番号": "9", "工程": "納品ずみ", "やること": "納品物を確認する（自分とクライアント）", "種": "進", "日数": 28, "依頼日": "2026-10-22", "比率": "正方形(1200×1200)／300KB未満（SN）", "訴求": "【文字なし・文字は入れない】（絵の補足: 袋が画面いっぱいにぎっしり積まれた写真。訴求は見出しで「発売開始から12日で完売・4ヶ月待ち」を言う）", "絵": "【全面】トメラックEXの袋（素材フォルダの実物写真どおりに（形・色・ロゴを変えない。濃い緑のスタンドパウチ／金の三日月の弧と光の粒／白の「トメラック」と金の「EX」／上に小さく「飲んで効く医薬品」／左にオレンジの丸））が画面いっぱいにぎっしり積まれた写真。人物なし。\n正方形の全面写真（スマートニュース用）。シンプルに、素朴なスマホ撮影のような生活感で。画像の中に文字を入れない（吹き出し・看板・テロップ・効果音・ポスター・画面・パッケージ以外の文字も入れない。商材のロゴだけは実物どおり）。下着・股の部分・漏れた跡は写さない。注釈は画像の左上か右上の角に1行で小さく、目立たせない。注釈は長くなっても改行せず1行に収める（字を小さくして横幅に入れる。2行以上に折り返さない）。\n【提供】画像の右下に「提供:さくらフォレスト」を1行で小さく。注釈とは別に入れる（注釈と並べて置いてもよい）。株式会社は付けない", "注釈": "※PR ※画像はイメージです ※個人の感想であり効果効能を保証するものではありません ※発売開始から12日で完売・自社調べ", "横転元": "9_114522801.jpg", "完成": "https://drive.google.com/file/d/1eIyXUQmJnabH-z3Hvqf5jJmYhJOmwbZ2/view?usp=drive_link", "外注者": "髙野", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/トメラック/横転元_2026-10-22/9_114522801.jpg", "クライアント": "", "入稿日": "", "作り直し先": "", "作り直し元": ""}, {"id": "TM-10", "商材": "トメラック", "略": "TM", "番号": "10", "工程": "納品ずみ", "やること": "納品物を確認する（自分とクライアント）", "種": "進", "日数": 28, "依頼日": "2026-10-22", "比率": "正方形(1200×1200)／300KB未満（SN）", "訴求": "【文字なし・文字は入れない】（絵の補足: 明るい会場で、笑顔の70代女性がマイクを持って体験を語る。訴求は見出しで「「正直疑ってた」54歳が頻尿を改善」を言う）", "絵": "【全面】明るい会場で、カーディガンの70代の日本人女性（実在の人物にしない）がマイクを持って満面の笑顔で話している胸から上。商材は写さない。\n正方形の全面写真（スマートニュース用）。シンプルに、素朴なスマホ撮影のような生活感で。画像の中に文字を入れない（吹き出し・看板・テロップ・効果音・ポスター・画面・パッケージ以外の文字も入れない。商材のロゴだけは実物どおり）。下着・股の部分・漏れた跡は写さない。注釈は画像の左上か右上の角に1行で小さく、目立たせない。注釈は長くなっても改行せず1行に収める（字を小さくして横幅に入れる。2行以上に折り返さない）。\n【提供】画像の右下に「提供:さくらフォレスト」を1行で小さく。注釈とは別に入れる（注釈と並べて置いてもよい）。株式会社は付けない", "注釈": "※PR ※画像はイメージです ※個人の感想であり効果効能を保証するものではありません ※漢方理論に基づく頻尿の改善", "横転元": "10_1562564718.jpg", "完成": "https://drive.google.com/file/d/1c9M4OZ9Hlx3DMCVjjlgutNsoR2sVxkSJ/view?usp=drive_link", "外注者": "髙野", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/トメラック/横転元_2026-10-22/10_1562564718.jpg", "クライアント": "", "入稿日": "", "作り直し先": "", "作り直し元": ""}, {"id": "TM-11", "商材": "トメラック", "略": "TM", "番号": "11", "工程": "納品ずみ", "やること": "納品物を確認する（自分とクライアント）", "種": "進", "日数": 28, "依頼日": "2026-10-22", "比率": "正方形(1200×1200)／300KB未満（SN）", "訴求": "【文字なし・文字は入れない】（絵の補足: 頭を抱える70代女性の漫画（日本の漫画のタッチ）。訴求は見出しで「おむつはイヤ…息子に下の世話はさせたくない」を言う）", "絵": "【全面】青い地に、カーディガンの70代の日本人女性が両手で頭を抱えて困った顔をしている漫画（日本の漫画のタッチ）。文字・吹き出し・効果音は入れない。商材は描かない。\n正方形の全面写真（スマートニュース用）。シンプルに、素朴なスマホ撮影のような生活感で。画像の中に文字を入れない（吹き出し・看板・テロップ・効果音・ポスター・画面・パッケージ以外の文字も入れない。商材のロゴだけは実物どおり）。下着・股の部分・漏れた跡は写さない。注釈は画像の左上か右上の角に1行で小さく、目立たせない。注釈は長くなっても改行せず1行に収める（字を小さくして横幅に入れる。2行以上に折り返さない）。\n【提供】画像の右下に「提供:さくらフォレスト」を1行で小さく。注釈とは別に入れる（注釈と並べて置いてもよい）。株式会社は付けない", "注釈": "※PR ※画像はイメージです ※個人の感想であり効果効能を保証するものではありません", "横転元": "11_114844973.jpg", "完成": "https://drive.google.com/file/d/1AE2NgqOF15YFMOJ5WxfKLTlVsA1tuAoQ/view?usp=drive_link", "外注者": "髙野", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/トメラック/横転元_2026-10-22/11_114844973.jpg", "クライアント": "", "入稿日": "", "作り直し先": "", "作り直し元": ""}, {"id": "TM-12", "商材": "トメラック", "略": "TM", "番号": "12", "工程": "納品ずみ", "やること": "納品物を確認する（自分とクライアント）", "種": "進", "日数": 28, "依頼日": "2026-10-22", "比率": "正方形(1200×1200)／300KB未満（SN）", "訴求": "【文字なし・文字は入れない】（絵の補足: スーパーでくしゃみをした60代女性がハッと固まる漫画1コマ。訴求は見出しで「50代以上の女性の2人に1人以上が経験」を言う）", "絵": "【全面】スーパーの売り場で、ピンクのカーディガンの60代の日本人女性が、くしゃみのあとハッと目を見開いて固まっている漫画1コマ（日本の漫画のタッチ）。漏れた跡は描かない。文字・効果音は入れない。商材は描かない。\n正方形の全面写真（スマートニュース用）。シンプルに、素朴なスマホ撮影のような生活感で。画像の中に文字を入れない（吹き出し・看板・テロップ・効果音・ポスター・画面・パッケージ以外の文字も入れない。商材のロゴだけは実物どおり）。下着・股の部分・漏れた跡は写さない。注釈は画像の左上か右上の角に1行で小さく、目立たせない。注釈は長くなっても改行せず1行に収める（字を小さくして横幅に入れる。2行以上に折り返さない）。\n【提供】画像の右下に「提供:さくらフォレスト」を1行で小さく。注釈とは別に入れる（注釈と並べて置いてもよい）。株式会社は付けない", "注釈": "※PR ※画像はイメージです ※個人の感想であり効果効能を保証するものではありません ※P&Gジャパン調べ（2019年・20代以上の女性4万人）", "横転元": "12_1563026257.jpg", "完成": "https://drive.google.com/file/d/1ozS6KbE-i86kJnVIqr2kY5ZeXN-w1DSq/view?usp=drive_link", "外注者": "髙野", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/トメラック/横転元_2026-10-22/12_1563026257.jpg", "クライアント": "", "入稿日": "", "作り直し先": "", "作り直し元": ""}, {"id": "TM-13", "商材": "トメラック", "略": "TM", "番号": "13", "工程": "納品ずみ", "やること": "納品物を確認する（自分とクライアント）", "種": "進", "日数": 28, "依頼日": "2026-10-22", "比率": "正方形(1200×1200)／300KB未満（SN）", "訴求": "【文字なし・文字は入れない】（絵の補足: 夜中のトイレのドアの前、スリッパの70代女性の足元。訴求は見出しで「夜中に何度もトイレで熟睡できない」を言う）", "絵": "【全面】夜の暗い廊下で、トイレのドアのすき間から光がもれ、その前に立つ花柄のパジャマとスリッパの70代の日本人女性の足元の寄り。商材は写さない。\n正方形の全面写真（スマートニュース用）。シンプルに、素朴なスマホ撮影のような生活感で。画像の中に文字を入れない（吹き出し・看板・テロップ・効果音・ポスター・画面・パッケージ以外の文字も入れない。商材のロゴだけは実物どおり）。下着・股の部分・漏れた跡は写さない。注釈は画像の左上か右上の角に1行で小さく、目立たせない。注釈は長くなっても改行せず1行に収める（字を小さくして横幅に入れる。2行以上に折り返さない）。\n【提供】画像の右下に「提供:さくらフォレスト」を1行で小さく。注釈とは別に入れる（注釈と並べて置いてもよい）。株式会社は付けない", "注釈": "※PR ※画像はイメージです ※個人の感想であり効果効能を保証するものではありません", "横転元": "13_1554645381.jpg", "完成": "https://drive.google.com/file/d/1gxs1AA51tMObPbK1nD2Cs7XeeRszmWVH/view?usp=drive_link", "外注者": "髙野", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/トメラック/横転元_2026-10-22/13_1554645381.jpg", "クライアント": "", "入稿日": "", "作り直し先": "", "作り直し元": ""}, {"id": "TM-14", "商材": "トメラック", "略": "TM", "番号": "14", "工程": "納品ずみ", "やること": "納品物を確認する（自分とクライアント）", "種": "進", "日数": 28, "依頼日": "2026-10-22", "比率": "正方形(1200×1200)／300KB未満（SN）", "訴求": "【文字なし・文字は入れない】（絵の補足: 夜中に目が覚めて、枕元の時計を見る70代女性。訴求は見出しで「夜中にトイレに目覚めることが悩みだった」を言う）", "絵": "【全面】夜の暗い寝室で、布団から体を起こした70代の日本人女性（実在の人物にしない）が、枕元の目覚まし時計（針は3時）を疲れた顔で見ている。商材は写さない。\n正方形の全面写真（スマートニュース用）。シンプルに、素朴なスマホ撮影のような生活感で。画像の中に文字を入れない（吹き出し・看板・テロップ・効果音・ポスター・画面・パッケージ以外の文字も入れない。商材のロゴだけは実物どおり）。下着・股の部分・漏れた跡は写さない。注釈は画像の左上か右上の角に1行で小さく、目立たせない。注釈は長くなっても改行せず1行に収める（字を小さくして横幅に入れる。2行以上に折り返さない）。\n【提供】画像の右下に「提供:さくらフォレスト」を1行で小さく。注釈とは別に入れる（注釈と並べて置いてもよい）。株式会社は付けない", "注釈": "※PR ※画像はイメージです ※個人の感想であり効果効能を保証するものではありません", "横転元": "14_21817611.jpg", "完成": "https://drive.google.com/file/d/1LBgOUm5AezOXAqNCi7FNHH2uMXRNycys/view?usp=drive_link", "外注者": "髙野", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/トメラック/横転元_2026-10-22/14_21817611.jpg", "クライアント": "", "入稿日": "", "作り直し先": "", "作り直し元": ""}, {"id": "TM-15", "商材": "トメラック", "略": "TM", "番号": "15", "工程": "直し中", "やること": "直しが上がってきたか見る", "種": "見", "日数": 28, "依頼日": "2026-10-22", "比率": "正方形(1200×1200)／300KB未満（SN）", "訴求": "【文字なし・文字は入れない】（絵の補足: 白黒の写真で、60代女性がまっすぐこちらを見る真顔。訴求は見出しで「骨盤底筋体操では鍛えられない」を言う）", "絵": "【全面】白黒の写真。黒いニットの60代の日本人女性（実在の人物にしない）が無表情でまっすぐこちらを見ている胸から上。商材は写さない。\n正方形の全面写真（スマートニュース用）。シンプルに、素朴なスマホ撮影のような生活感で。画像の中に文字を入れない（吹き出し・看板・テロップ・効果音・ポスター・画面・パッケージ以外の文字も入れない。商材のロゴだけは実物どおり）。下着・股の部分・漏れた跡は写さない。注釈は画像の左上か右上の角に1行で小さく、目立たせない。注釈は長くなっても改行せず1行に収める（字を小さくして横幅に入れる。2行以上に折り返さない）。\n【提供】画像の右下に「提供:さくらフォレスト」を1行で小さく。注釈とは別に入れる（注釈と並べて置いてもよい）。株式会社は付けない", "注釈": "※PR ※画像はイメージです ※個人の感想であり効果効能を保証するものではありません", "横転元": "15_22566361.jpg", "完成": "https://drive.google.com/file/d/1aOBP2LtcDnXmyyCsjSPRhePsVXyt6Qg2/view?usp=drive_link", "外注者": "髙野", "検収": "https://drive.google.com/file/d/1FvdROZpYYZ7CVGRK8EE1QqzMJEU_DPLN/view?usp=drive_link\nちょっとただの画像すぎるので\n\nこの人を70歳くらいに変えて\n上記リンクのような画像に変更\n背景はショッピングモールで大行列の女子トイレの前", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/トメラック/横転元_2026-10-22/15_22566361.jpg", "クライアント": "", "入稿日": "", "作り直し先": "", "作り直し元": ""}, {"id": "TM-16", "商材": "トメラック", "略": "TM", "番号": "16", "工程": "納品ずみ", "やること": "納品物を確認する（自分とクライアント）", "種": "進", "日数": 28, "依頼日": "2026-10-22", "比率": "正方形(1200×1200)／300KB未満（SN）", "訴求": "【文字なし・文字は入れない】（絵の補足: 笑う孫を抱きしめる70代の祖母。訴求は見出しで「尿もれパッドをつけてたら孫に臭いと言われた」を言う）", "絵": "【全面】明るい居間で、70代の日本人の祖母が5歳くらいの孫を抱きしめて、二人とも満面の笑顔。商材は写さない。\n正方形の全面写真（スマートニュース用）。シンプルに、素朴なスマホ撮影のような生活感で。画像の中に文字を入れない（吹き出し・看板・テロップ・効果音・ポスター・画面・パッケージ以外の文字も入れない。商材のロゴだけは実物どおり）。下着・股の部分・漏れた跡は写さない。注釈は画像の左上か右上の角に1行で小さく、目立たせない。注釈は長くなっても改行せず1行に収める（字を小さくして横幅に入れる。2行以上に折り返さない）。\n【提供】画像の右下に「提供:さくらフォレスト」を1行で小さく。注釈とは別に入れる（注釈と並べて置いてもよい）。株式会社は付けない", "注釈": "※PR ※画像はイメージです ※個人の感想であり効果効能を保証するものではありません", "横転元": "16_22217554.jpg", "完成": "https://drive.google.com/file/d/1SKXd5I1nyrTKBqNRKdwgpk-_YCsJ_9sM/view?usp=drive_link", "外注者": "髙野", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/トメラック/横転元_2026-10-22/16_22217554.jpg", "クライアント": "", "入稿日": "", "作り直し先": "", "作り直し元": ""}, {"id": "TM-17", "商材": "トメラック", "略": "TM", "番号": "17", "工程": "直し中", "やること": "直しが上がってきたか見る", "種": "見", "日数": 28, "依頼日": "2026-10-22", "比率": "正方形(1200×1200)／300KB未満（SN）", "訴求": "【文字なし・文字は入れない】（絵の補足: 製薬会社の記者会見で、白衣の70代男性がマイクで話す。訴求は見出しで「100年続く老舗企業と世界進出メーカーが共同開発」を言う）", "絵": "【全面】記者会見の会場で、白衣の70代の日本人男性（実在の人物にしない）が机の前でマイクを持って話している。背景のボードは無地の紺（社名・ロゴ・文字は入れない）。机の上にトメラックEXの袋（素材フォルダの実物写真どおりに（形・色・ロゴを変えない。濃い緑のスタンドパウチ／金の三日月の弧と光の粒／白の「トメラック」と金の「EX」／上に小さく「飲んで効く医薬品」／左にオレンジの丸））を1つ。\n正方形の全面写真（スマートニュース用）。シンプルに、素朴なスマホ撮影のような生活感で。画像の中に文字を入れない（吹き出し・看板・テロップ・効果音・ポスター・画面・パッケージ以外の文字も入れない。商材のロゴだけは実物どおり）。下着・股の部分・漏れた跡は写さない。注釈は画像の左上か右上の角に1行で小さく、目立たせない。注釈は長くなっても改行せず1行に収める（字を小さくして横幅に入れる。2行以上に折り返さない）。\n【提供】画像の右下に「提供:さくらフォレスト」を1行で小さく。注釈とは別に入れる（注釈と並べて置いてもよい）。株式会社は付けない", "注釈": "※PR ※画像はイメージです ※個人の感想であり効果効能を保証するものではありません", "横転元": "17_1562710315.jpg", "完成": "https://drive.google.com/file/d/1hy79l-Mwx-8yzdlyq2BOgpxg5dRLTBCL/view?usp=drive_link", "外注者": "髙野", "検収": "白衣がNGのため\n→服装を白衣以外の権威っぽい服装に", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/トメラック/横転元_2026-10-22/17_1562710315.jpg", "クライアント": "", "入稿日": "", "作り直し先": "", "作り直し元": ""}, {"id": "TM-18", "商材": "トメラック", "略": "TM", "番号": "18", "工程": "納品ずみ", "やること": "納品物を確認する（自分とクライアント）", "種": "進", "日数": 28, "依頼日": "2026-10-22", "比率": "正方形(1200×1200)／300KB未満（SN）", "訴求": "【文字なし・文字は入れない】（絵の補足: 黒い皿に並べた8種の生薬（根・実・皮）の寄り。訴求は見出しで「京大が研究した成分を高濃度配合」を言う）", "絵": "【全面】黒い地に、小さな黒い皿8つに乾いた生薬（根・木の実・樹皮・茶色の粉）を並べた寄り。真ん中にトメラックEXの袋（素材フォルダの実物写真どおりに（形・色・ロゴを変えない。濃い緑のスタンドパウチ／金の三日月の弧と光の粒／白の「トメラック」と金の「EX」／上に小さく「飲んで効く医薬品」／左にオレンジの丸））を1つ。人物なし。\n正方形の全面写真（スマートニュース用）。シンプルに、素朴なスマホ撮影のような生活感で。画像の中に文字を入れない（吹き出し・看板・テロップ・効果音・ポスター・画面・パッケージ以外の文字も入れない。商材のロゴだけは実物どおり）。下着・股の部分・漏れた跡は写さない。注釈は画像の左上か右上の角に1行で小さく、目立たせない。注釈は長くなっても改行せず1行に収める（字を小さくして横幅に入れる。2行以上に折り返さない）。\n【提供】画像の右下に「提供:さくらフォレスト」を1行で小さく。注釈とは別に入れる（注釈と並べて置いてもよい）。株式会社は付けない", "注釈": "※PR ※画像はイメージです ※個人の感想であり効果効能を保証するものではありません ※京都大学で研究された成分のこと", "横転元": "18_1561632271.jpg", "完成": "https://drive.google.com/file/d/13QveDvB-tgmOIE80nUtPgCwCDz27wFDG/view?usp=drive_link", "外注者": "髙野", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/トメラック/横転元_2026-10-22/18_1561632271.jpg", "クライアント": "", "入稿日": "", "作り直し先": "", "作り直し元": ""}, {"id": "TM-19", "商材": "トメラック", "略": "TM", "番号": "19", "工程": "納品ずみ", "やること": "納品物を確認する（自分とクライアント）", "種": "進", "日数": 28, "依頼日": "2026-10-22", "比率": "正方形(1200×1200)／300KB未満（SN）", "訴求": "【文字なし・文字は入れない】（絵の補足: 朝の洗面所の台に、袋と水のコップ。訴求は見出しで「苦みゼロの錠剤で外出も安心」を言う）", "絵": "【全面】朝の光の洗面所で、白い台の上にトメラックEXの袋（素材フォルダの実物写真どおりに（形・色・ロゴを変えない。濃い緑のスタンドパウチ／金の三日月の弧と光の粒／白の「トメラック」と金の「EX」／上に小さく「飲んで効く医薬品」／左にオレンジの丸））と水の入ったコップ、小皿に茶色の小さな丸い錠剤が4粒。人物なし。\n正方形の全面写真（スマートニュース用）。シンプルに、素朴なスマホ撮影のような生活感で。画像の中に文字を入れない（吹き出し・看板・テロップ・効果音・ポスター・画面・パッケージ以外の文字も入れない。商材のロゴだけは実物どおり）。下着・股の部分・漏れた跡は写さない。注釈は画像の左上か右上の角に1行で小さく、目立たせない。注釈は長くなっても改行せず1行に収める（字を小さくして横幅に入れる。2行以上に折り返さない）。\n【提供】画像の右下に「提供:さくらフォレスト」を1行で小さく。注釈とは別に入れる（注釈と並べて置いてもよい）。株式会社は付けない", "注釈": "※PR ※画像はイメージです ※個人の感想であり効果効能を保証するものではありません", "横転元": "19_22521302.jpg", "完成": "https://drive.google.com/file/d/1DwTXI7pngdjPWmx7SaiBG7n6Isewnsbg/view?usp=drive_link", "外注者": "髙野", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/トメラック/横転元_2026-10-22/19_22521302.jpg", "クライアント": "", "入稿日": "", "作り直し先": "", "作り直し元": ""}, {"id": "TM-20", "商材": "トメラック", "略": "TM", "番号": "20", "工程": "納品ずみ", "やること": "納品物を確認する（自分とクライアント）", "種": "進", "日数": 28, "依頼日": "2026-10-22", "比率": "正方形(1200×1200)／300KB未満（SN）", "訴求": "【文字なし・文字は入れない】（絵の補足: 灰色の地で、紺のスクラブの女性医療者が真剣な顔でこちらに話す。訴求は見出しで「8種の超希少な生薬を特別処方」を言う）", "絵": "【全面】灰色の地で、紺のスクラブの40代の日本人女性医療者（実在の人物にしない）が真剣な顔でこちらに話している胸から上。商材は写さない。\n正方形の全面写真（スマートニュース用）。シンプルに、素朴なスマホ撮影のような生活感で。画像の中に文字を入れない（吹き出し・看板・テロップ・効果音・ポスター・画面・パッケージ以外の文字も入れない。商材のロゴだけは実物どおり）。下着・股の部分・漏れた跡は写さない。注釈は画像の左上か右上の角に1行で小さく、目立たせない。注釈は長くなっても改行せず1行に収める（字を小さくして横幅に入れる。2行以上に折り返さない）。\n【提供】画像の右下に「提供:さくらフォレスト」を1行で小さく。注釈とは別に入れる（注釈と並べて置いてもよい）。株式会社は付けない", "注釈": "※PR ※画像はイメージです ※個人の感想であり効果効能を保証するものではありません", "横転元": "20_22728674.jpg", "完成": "https://drive.google.com/file/d/1pWh26cgL9MUbV7j_Ld3mo4zSnYl0DPdy/view?usp=drive_link", "外注者": "髙野", "検収": "", "審査": "", "落ち理由": "", "配信": "", "元の実物": "01_運用/_依頼/トメラック/横転元_2026-10-22/20_22728674.jpg", "クライアント": "", "入稿日": "", "作り直し先": "", "作り直し元": ""}], "ページ": "TM", "絞り": "トメラック"}</script>
+<script>
+const D = JSON.parse(document.getElementById('data').textContent);
+const 種 = Object.fromEntries(D.工程.map(x => [x.名, x.種]));
+const やる = Object.fromEntries(D.工程.map(x => [x.名, x.やること]));
+const DONE = ['配信中'];
+const kind = s => 種[s] === '進' ? 'mine' : 種[s] === '見' ? 'wait' : 'done';
+const 順 = D.工程.map(x => x.名);
+const 案順 = Object.keys(D.略号);
+let fStage = null, fPj = null, fQ = '';
+
+/* 案件ナビ */
+const nav = document.getElementById('nav');
+nav.innerHTML = [['index', 'ぜんぶ', '']].concat(
+  Object.entries(D.略号).map(([名, 略]) => [略, 名, 略])
+).map(([f, 名, 略]) =>
+  `<a href="${f}.html"${D.ページ === f ? ' aria-current="page"' : ''}>${名}`
+  + (略 ? `<b>${略}</b>` : '') + `</a>`).join('');
+
+document.title = (D.絞り ? D.絞り + '　' : '') + 'CR工程板';
+if (D.絞り) document.querySelector('h1').textContent = D.絞り;
+document.getElementById('sub').textContent =
+  `${D.作成} 時点　シートの写し${D.写し[D.絞り] ? '（' + D.写し[D.絞り] + '）' : ''}から作っている　`
+  + (D.絞り ? `このページは${D.絞り}の${D.CR.length}本` : `7案件 ${D.CR.length}本`);
+const cnt = k => D.CR.filter(c => kind(c.工程) === k).length;
+nMine.textContent = cnt('mine'); nWait.textContent = cnt('wait');
+nAll.textContent = D.CR.length;
+
+/* 工程レール */
+const rail = document.getElementById('rail');
+D.工程.forEach(st => {
+  const n = D.CR.filter(c => c.工程 === st.名).length;
+  const b = document.createElement('button');
+  b.className = 'stage ' + kind(st.名);
+  b.setAttribute('aria-pressed', 'false');
+  b.innerHTML = `<span class="sn">${st.名}</span>`
+    + `<span class="sc${n ? '' : ' zero'}">${n || '·'}</span>`
+    + `<span class="st">${st.やること || '—'}</span>`;
+  b.onclick = () => { fStage = fStage === st.名 ? null : st.名; draw(); };
+  b.dataset.stage = st.名;
+  rail.appendChild(b);
+});
+
+/* 案件の絞り込み */
+const pjs = document.getElementById('pjs');
+if (D.絞り) document.getElementById('pjs').hidden = true;
+Object.entries(D.略号).forEach(([名, 略]) => {
+  const n = D.CR.filter(c => c.商材 === 名).length;
+  const b = document.createElement('button');
+  b.className = 'f'; b.setAttribute('aria-pressed', 'false');
+  b.textContent = `${略}　${名}　${n}`;
+  b.onclick = () => { fPj = fPj === 名 ? null : 名; draw(); };
+  b.dataset.pj = 名;
+  pjs.appendChild(b);
+});
+
+/* 足したらシートの行数になるか（決めごと637） */
+(() => {
+  const el = document.getElementById('tally');
+  const 対象 = D.絞り ? [D.絞り] : Object.keys(D.略号);
+  const ずれ = 対象.map(p => {
+    const 工 = D.CR.filter(c => c.商材 === p).length;
+    const 行 = (D.行数 || {})[p];
+    return { p, 工, 行 };
+  }).filter(x => x.行 != null && x.工 !== x.行);
+  const 計 = D.CR.length;
+  const 行計 = 対象.reduce((s, p) => s + ((D.行数 || {})[p] || 0), 0);
+  if (ずれ.length) {
+    el.className = 'ng';
+    el.textContent = '工程の合計がシートの行数と合わない　'
+      + ずれ.map(x => `${x.p} ${x.工}/${x.行}`).join('、');
+  } else {
+    el.textContent = `✓ 工程を全部足すと ${計} ＝ 依頼シートの行数 ${行計}`
+      + (D.絞り ? '' : `（${対象.length}案件とも一致）`);
+  }
+})();
+
+
+/* Todo＝全工程のやること（決めごと640） */
+(() => {
+  // **要素は getElementById で取る。**id頼みの暗黙グローバルに寄りかかると、
+  // 置換で定義行が消えても気づけない（2026-09-14・決めごと643）
+  const box = document.getElementById('stalls');
+  let 総 = 0;
+  const html = D.工程.filter(x => x.やること).map(x => {
+    const v = D.CR.filter(c => c.工程 === x.名);
+    if (!v.length) return '';
+    総 += v.length;
+    const k = x.種 === '進' ? 'mine' : 'wait';
+    const byPj = {};
+    v.forEach(c => (byPj[c.商材] = byPj[c.商材] || []).push(c));
+    const 行 = Object.entries(byPj).sort((a, b) => b[1].length - a[1].length)
+      .map(([pj, cs]) => {
+        cs.sort((a, b) => (+b.番号) - (+a.番号));
+        const 最 = Math.max(...cs.map(c => c.日数));
+        const ids = cs.slice(0, 12)
+          .map(c => `<button class="chip" data-id="${c.id}">${c.id}</button>`).join('')
+          + (cs.length > 12 ? `<span class="cnt">ほか${cs.length - 12}</span>` : '');
+        return `<div class="stall ${k}"><span class="pj">${pj}</span>`
+          + `<span class="cnt">${cs.length}本${最 >= 3 ? '・最長' + 最 + '日' : ''}</span>`
+          + `<span class="ids">${ids}</span></div>`;
+      }).join('');
+    return `<div class="todohead ${k}"><em>${x.種}</em><b>${x.やること}</b>`
+      + `<span>${v.length}本・${x.名}</span></div>` + 行;
+  }).join('');
+  box.innerHTML = html || '<div class="stall">やることは無い。</div>';
+  const note = document.getElementById('todoNote');
+  if (総 && note) note.insertAdjacentHTML('beforeend',
+    ` <b style="font-family:var(--mono);color:var(--shu)">合計${総}本</b>`);
+})();
+
+/* 登録簿 */
+const rows = document.getElementById('rows');
+function draw() {
+  document.querySelectorAll('.stage').forEach(b =>
+    b.setAttribute('aria-pressed', b.dataset.stage === fStage));
+  document.querySelectorAll('.f[data-pj]').forEach(b =>
+    b.setAttribute('aria-pressed', b.dataset.pj === fPj));
+  const q = fQ.trim().toLowerCase();
+  const list = D.CR.filter(c =>
+    (!fStage || c.工程 === fStage) && (!fPj || c.商材 === fPj) &&
+    (!q || c.id.toLowerCase().includes(q) || (c.訴求 + c.絵 + c.検収).toLowerCase().includes(q))
+  ).sort((a, b) =>
+    案順.indexOf(a.商材) - 案順.indexOf(b.商材) || (+b.番号) - (+a.番号));
+  rows.innerHTML = list.map(c => {
+    const k = kind(c.工程);
+    return `<tr class="${k}" data-id="${c.id}">`
+      + `<td class="id">${c.id}</td>`
+      + `<td class="stg"><span class="pill ${k}">${c.工程}</span></td>`
+      + `<td class="hx">${D.絞り ? c.やること : c.商材}</td>`
+      + `<td class="txt hx">${(c.訴求 || c.絵 || '').replace(/\n/g, ' ').slice(0, 200)}</td>`
+      + `<td class="d">${c.日数}日</td></tr>`;
+  }).join('');
+  document.getElementById('none').hidden = list.length > 0;
+}
+
+/* 中身 */
+const sheet = document.getElementById('sheet'), scrim = document.getElementById('scrim');
+function open_(id) {
+  const c = D.CR.find(x => x.id === id); if (!c) return;
+  const k = kind(c.工程);
+  sId.textContent = c.id;
+  sPj.textContent = `${c.商材}　${c.番号}番　${c.比率 || ''}`;
+  sTurn.className = 'turn ' + k;
+  sTurn.innerHTML = `<b>${c.工程}</b> <span>→ ${c.やること}・${c.日数}日</span>`;
+  const F = [['依頼日', c.依頼日], ['入れる訴求', c.訴求], ['絵の指示', c.絵],
+    ['入れる注釈', c.注釈], ['横転元', c.横転元], ['元の実物', c.元の実物],
+    ['検収', c.検収], ['審査', c.審査], ['おちた理由', c.落ち理由], ['配信', c.配信],
+    ['作り直し先', c.作り直し先], ['作り直し元', c.作り直し元],
+    ['クライアント', c.クライアント], ['入稿日', c.入稿日]];
+  sDl.innerHTML = F.filter(([, v]) => v).map(([n, v]) => {
+    const mono = ['横転元', '元の実物', '依頼日', '入稿日',
+                  '作り直し先', '作り直し元'].includes(n);
+    if (n === '作り直し先' || n === '作り直し元')
+      return `<dt>${n}</dt><dd class="mono">`
+        + `<button class="chip" data-id="${esc(v)}">${esc(v)}</button></dd>`;
+    return `<dt>${n}</dt><dd class="${mono ? 'mono' : ''}">${esc(v)}</dd>`;
+  }).join('') + (c.完成 ? `<dt>完成CR</dt><dd class="mono"><a href="${c.完成}" target="_blank" rel="noopener">Driveで開く</a></dd>` : '');
+  sheet.classList.add('open'); scrim.classList.add('open');
+  sheet.setAttribute('aria-hidden', 'false'); document.getElementById('close').focus();
+}
+const esc = s => String(s).replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m]));
+function shut() {
+  sheet.classList.remove('open'); scrim.classList.remove('open');
+  sheet.setAttribute('aria-hidden', 'true');
+}
+document.getElementById('close').onclick = shut;
+scrim.onclick = shut;
+addEventListener('keydown', e => { if (e.key === 'Escape') shut(); });
+document.body.addEventListener('click', e => {
+  const t = e.target.closest('[data-id]'); if (t) open_(t.dataset.id);
+});
+document.getElementById('q').addEventListener('input', e => { fQ = e.target.value; draw(); });
+document.getElementById('clear').onclick = () => {
+  fStage = fPj = null; fQ = ''; document.getElementById('q').value = ''; draw();
+};
+if (!D.絞り) document.getElementById('th3').textContent = '案件';
+draw();
+</script>
